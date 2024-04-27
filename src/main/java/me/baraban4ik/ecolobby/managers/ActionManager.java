@@ -53,7 +53,7 @@ public class ActionManager {
                 }
             }
             else if (actionType(action, "[TELEPORT_TO_SPAWN]")) {
-                Location spawn = Spawn.get("main");
+                Location spawn = Spawn.getSpawn("main");
                 if (spawn != null) player.teleport(spawn);
             }
             else if (actionType(action, "[TITLE]")) {
