@@ -11,7 +11,11 @@ public class TabManager {
     private List<String> header = new ArrayList<>();
     private List<String> footer = new ArrayList<>();
 
+    private String prefix;
+    private String suffix;
+
     public void update(Player player) {
+        player.setPlayerListName(Format.format(prefix, player) + player.getName() + Format.format(suffix, player));
         player.setPlayerListHeader(convert(header, player));
         player.setPlayerListFooter(convert(footer, player));
     }
@@ -30,5 +34,11 @@ public class TabManager {
         footer = list;
     }
 
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 }
