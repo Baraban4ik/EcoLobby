@@ -39,14 +39,23 @@ public class PlayerListener implements Listener {
         player.setFoodLevel(config.getInt("Player.food_level"));
         player.setLevel(config.getInt("Player.level_exp"));
 
-        effects.forEach((x) -> {
-            PotionEffectType types = PotionEffectType.getByName(x.split(":")[0].toUpperCase());
-            int level = Integer.parseInt(x.split(":")[1]) - 1;
-            for (PotionEffect type : player.getActivePotionEffects()) {
-                player.removePotionEffect(type.getType());
-            }
-            player.addPotionEffect(new PotionEffect(types, 9999999, level));
-        });
+        for (PotionEffect activeEffect : player.getActivePotionEffects()) {
+            player.removePotionEffect(activeEffect.getType());
+        }
+
+        for (String effect : effects) {
+            String[] effectSplit = effect.split(":");
+
+            PotionEffectType type = PotionEffectType.getByName(effectSplit[0].toUpperCase());
+            if (type == null) continue;
+            int level = Integer.parseInt(effectSplit[1]);
+            int time = Integer.parseInt(effectSplit[2]) * 20;
+
+            boolean particles = Boolean.parseBoolean(effectSplit[3]);
+            int duration = (time == 0) ? Integer.MAX_VALUE : time;
+
+            player.addPotionEffect(new PotionEffect(type, duration, level-1, false, particles));
+        }
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.setAllowFlight(config.getBoolean("Player.abilities.enable_fly"));
