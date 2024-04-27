@@ -87,8 +87,11 @@ Player:
   food_level: 20
   level_exp: 0
   # Player effects such as: SPEED
-  # USAGE: 'EFFECT:LEVEL'
-  effects: []
+  #
+  # If 'TIME' is 0, the effect is infinite
+  # USAGE: 'EFFECT:LEVEL:TIME:PARTICLE'
+  effects:
+    - "SPEED:1:0:false"
 
   abilities:
     # Disable ability to write to chat
@@ -164,19 +167,3 @@ Hiders:
   hide_stream: true
   # Hide the players from each other
   hide_players: true
-
-# Works with version 1.13 and higher
-TabList:
-  # TabList update time in seconds
-  refresh: 1
-  header:
-    - "                                                          "
-    - "&a&lsᴇʀᴠᴇʀɴᴀᴍᴇ"
-    - ""
-    - "&aOnline:"
-    - "&7%online%"
-    - ""
-  footer:
-    - ""
-    - "&aᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
-    - ""
