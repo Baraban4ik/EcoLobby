@@ -8,6 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SpawnCommand extends BaseCommand {
     @Override
     public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
@@ -16,13 +19,17 @@ public class SpawnCommand extends BaseCommand {
         Player player = (Player) sender;
         if (!hasPermission(player, "ecolobby.spawn")) return;
 
-        Location spawn = Spawn.get("main");
+        Location spawn = Spawn.getSpawn("main");
 
         if (spawn == null) {
             Chat.sendPathMessage("null_spawn", player);
             return;
         }
-        Chat.sendPathMessage("teleported_spawn", player);
         player.teleport(spawn);
+        Chat.sendPathMessage("teleported_spawn", player);
+    }
+    @Override
+    public List<String> complete(CommandSender sender, String[] args) {
+        return new ArrayList<>();
     }
 }

@@ -20,19 +20,19 @@ public class SetSpawnCommand extends BaseCommand {
         Player player = (Player) sender;
         if (!hasPermission(player, "ecolobby.setspawn")) return;
 
-        if (args.length == 0) {
-            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
-            Spawn.set(player, "main");
-        }
-        else if (args.length == 1) {
-            String spawnType = args[0];
+        switch (args.length) {
+            case 0:
+                Spawn.setSpawn(player, "main");
+                Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
+            case 1:
+                String spawnType = args[0];
 
-            if (!spawnType.equalsIgnoreCase("main") && !spawnType.equalsIgnoreCase("first")) {
-                Chat.sendMessage(MESSAGES.SETSPAWN_USAGE, player);
-                return;
-            }
-            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
-            Spawn.set(player, spawnType);
+                if (!spawnType.equalsIgnoreCase("main") && !spawnType.equalsIgnoreCase("first")) {
+                    Chat.sendMessage(MESSAGES.SETSPAWN_USAGE, player);
+                    return;
+                }
+                Spawn.setSpawn(player, spawnType);
+                Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
         }
     }
     @Override
