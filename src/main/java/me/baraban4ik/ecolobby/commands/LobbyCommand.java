@@ -22,7 +22,7 @@ import static me.baraban4ik.ecolobby.EcoLobby.items;
 public class LobbyCommand extends BaseCommand {
     @Override
     public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
-        switch ((args.length)) {
+        switch (args.length) {
             case 1:
                 switch (args[0].toLowerCase()) {
                     case "reload":
@@ -31,18 +31,14 @@ public class LobbyCommand extends BaseCommand {
                         Chat.sendMessage(MESSAGES.PLUGIN_RELOADED, sender);
                         EcoLobby.instance.reload();
                         return;
-                    case "test":
-                        if (!hasPermission(sender, "ecolobby.test")) return;
-                        Chat.sendPathMessage("prefix", sender);
-                        return;
                     case "setspawn": {
                         if (!isPlayer(sender)) return;
 
                         Player player = (Player) sender;
                         if (!hasPermission(player, "ecolobby.setspawn")) return;
 
+                        Spawn.setSpawn(player, "main");
                         Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
-                        Spawn.set(player, "main");
                         return;
                     }
                     case "spawn": {
@@ -51,7 +47,7 @@ public class LobbyCommand extends BaseCommand {
                         Player player = (Player) sender;
                         if (!hasPermission(player, "ecolobby.spawn")) return;
 
-                        this.teleportSpawn(player);
+                        teleportSpawn(player);
                         return;
                     }
                     case "give":
@@ -62,7 +58,9 @@ public class LobbyCommand extends BaseCommand {
 
                         Chat.sendMessage(MESSAGES.GIVE_USAGE, player);
                         return;
+
                 }
+                break;
             case 2:
                 switch (args[0].toLowerCase()) {
                     case "setspawn": {
@@ -71,14 +69,16 @@ public class LobbyCommand extends BaseCommand {
                         Player player = (Player) sender;
                         if (!hasPermission(player, "ecolobby.setspawn")) return;
 
-                        if (!args[1].equalsIgnoreCase("main") && args[1].equalsIgnoreCase("first")) {
+                        String spawnType = args[1];
+
+                        if (!spawnType.equalsIgnoreCase("main") && !spawnType.equalsIgnoreCase("first")) {
                             Chat.sendMessage(MESSAGES.SETSPAWN_USAGE, player);
                             return;
                         }
 
+                        Spawn.setSpawn(player, spawnType);
                         Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
-                        Spawn.set(player, args[1]);
-                        break;
+                        return;
                     }
                     case "give": {
                         if (!isPlayer(sender)) return;
@@ -86,10 +86,12 @@ public class LobbyCommand extends BaseCommand {
                         Player player = (Player) sender;
                         if (!hasPermission(player, "ecolobby.give")) return;
 
-                        this.giveItem(player, args[1]);
-                        break;
+                        String itemName = args[1];
+                        giveItem(player, itemName);
+                        return;
                     }
                 }
+                break;
             case 3:
                 if (args[0].equalsIgnoreCase("give")) {
                     if (!isPlayer(sender)) return;
@@ -102,31 +104,31 @@ public class LobbyCommand extends BaseCommand {
                         Chat.sendMessage(MESSAGES.PLAYER_NOT_FOUND, player);
                         return;
                     }
-
-                    this.giveItem(fromPlayer, args[2]);
-                    break;
+                    String itemName = args[2];
+                    giveItem(fromPlayer, itemName);
+                    return;
                 }
-            default:
-                if (!hasPermission(sender, "ecolobby.help")) return;
-                Chat.sendMessage(MESSAGES.HELP_MESSAGE, sender);
         }
-
+        if (!hasPermission(sender, "ecolobby.help")) return;
+        Chat.sendMessage(MESSAGES.HELP_MESSAGE, sender);
     }
 
     private void teleportSpawn(Player player) {
-        Location spawn = Spawn.get("main");
+        Location spawn = Spawn.getSpawn("main");
 
         if (spawn == null) {
             Chat.sendPathMessage("null_spawn", player);
             return;
         }
-        Chat.sendPathMessage("teleported_spawn", player);
         player.teleport(spawn);
+        Chat.sendPathMessage("teleported_spawn", player);
     }
+
     private void giveItem(Player player, String itemName) {
         Chat.sendMessage(MESSAGES.SUCCESSFULLY_GIVE_ITEM, player);
         ItemManager.giveItem(player, itemName);
     }
+
     @Override
     public List<String> complete(CommandSender sender, String[] args) {
         ConfigurationSection itemsSection = items.getConfigurationSection("Items");
