@@ -1,0 +1,18 @@
+# Works with version 1.13 and higher
+enabled: true
+# TabList update time in seconds
+refresh: 1
+header:
+  - "                                                          "
+  - "&a&lsᴇʀᴠᴇʀɴᴀᴍᴇ"
+  - ""
+  - "&aOnline:"
+  - "&7%online%"
+  - ""
+footer:
+  - ""
+  - "&aᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
+  - ""
+
+tabPrefix: ""
+tabSuffix: ""
