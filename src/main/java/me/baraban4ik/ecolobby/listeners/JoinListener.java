@@ -28,8 +28,8 @@ public class JoinListener implements Listener {
         if (config.getBoolean("Join_and_Leave.teleport_to_spawn")) {
             Location spawn;
 
-            if (player.hasPlayedBefore()) spawn = Spawn.get("main");
-            else spawn = Spawn.get("first");
+            if (player.hasPlayedBefore()) spawn = Spawn.getSpawn("main");
+            else spawn = Spawn.getSpawn("first");
 
             if (spawn != null) player.teleport(spawn);
         }
