@@ -1,7 +1,7 @@
 name: EcoLobby
 author: Baraban4ik
 version: '${project.version}'
-api-version: 1.13
+api-version: 1.16
 main: me.baraban4ik.ecolobby.EcoLobby
 softdepend: [PlaceholderAPI, NoteBlockAPI]
 
@@ -9,10 +9,13 @@ commands:
   ecolobby:
     usage: /<command> <reload, help, give, setspawn, spawn>
     aliases: [el, elobby, lobby]
+    permission: ecolobby.command
   setspawn:
     usage: /<command> (main / first)
+    permission: ecolobby.command.setspawn
   spawn:
     usage: /<command>
+    permission: ecolobby.command.spawn
 
 permissions:
   ecolobby.*:
@@ -20,15 +23,15 @@ permissions:
     children:
       ecolobby.bypass.*: true
 
-  ecolobby.reload:
+  ecolobby.command.reload:
     default: op
-  ecolobby.help:
+  ecolobby.command.help:
     default: true
-  ecolobby.give:
+  ecolobby.command.give:
     default: op
-  ecolobby.setspawn:
+  ecolobby.command.setspawn:
     default: op
-  ecolobby.spawn:
+  ecolobby.command.spawn:
     default: true
 
   ecolobby.bypass.*:

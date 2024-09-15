@@ -1,107 +1,110 @@
-#   ____  ___  _____    __    _____  ____  ____  _  _
-#  ( ___)/ __)(  _  )  (  )  (  _  )(  _ \(  _ \( \/ )  AUTHOR: Baraban4ik
-#   )__)( (__  )(_)(    )(__  )(_)(  ) _ < ) _ < \  /   VERSION: ${project.version}
-#  (____)\___)(_____)  (____)(_____)(____/(____/ (__)
+#  ╔═════════════════════════════════════════════════════════════╗
+#  ║                                                             ║
+#  ║      ____  ___  _____    __    _____  ____  ____  _  _      ║
+#  ║     ( ___)/ __)(  _  )  (  )  (  _  )(  _ \(  _ \( \/ )     ║
+#  ║      )__)( (__  )(_)(    )(__  )(_)(  ) _ < ) _ < \  /      ║
+#  ║     (____)\___)(_____)  (____)(_____)(____/(____/ (__)      ║
+#  ║                                                             ║
+#  ╚═════════════════════════════════════════════════════════════╝
 #
-#  PLUGIN PLACEHOLDERS:
-#  * %prfx% - Prefix in the messages.yml file
-#  * %NL% - New line
-#  * %player% - Player nickname
-#  * %online% - Server online
-#
-# Also you can use placeholders from PlaceholderAPI
-# Also you can hex colors (1.16.5 and higher)
-# * Format: #color
-# * Example: #ffaa00
-#
-#  AVAILABLE ACTIONS:
-#  For anything with an "actions" parameter
-#
-#  * "[MSG] msg" - Send a message to a player
-#  * "[BROADCAST] msg" - Sends a message to all players on the server
-#  * "[TITLE] msg;sub_msg" - Send a message to the player as a title
-#  * "[ACTIONBAR]" - Send a message to the player as an action-bar
-#  * "[PLAYER] command" - Execute the command as player
-#  * "[CONSOLE] command" - Execute the command as console
-#  * "[CONNECT] server" - Switches to BungeeCord or Velocity server
-#  * "[SOUND] sound;volume;pitch" - Play a sound for the player
-#  * "[TELEPORT_TO_SPAWN]" - Teleport a player to a spawn
+#  ╔═════════════════════════════════════════════════════════════╗
+#  ║                     PLUGIN PLACEHOLDERS                     ║
+#  ║                                                             ║
+#  ║  * %prfx%   - Prefix in the messages.yml file               ║
+#  ║  * %player% - Player nickname                               ║
+#  ║  * %online% - Server online                                 ║
+#  ║  * %NL%     - New line                                      ║
+#  ║                                                             ║
+#  ║  You can also use placeholders from PlaceholderAPI          ║
+#  ║  and hex colors (1.16.5 and higher)                         ║
+#  ║  * Format: #color                                           ║
+#  ║  * Example: #ffaa00                                         ║
+#  ║                                                             ║
+#  ╚═════════════════════════════════════════════════════════════╝
+#  ╔═════════════════════════════════════════════════════════════╗
+#  ║                      AVAILABLE ACTIONS                      ║
+#  ║                                                             ║
+#  ║  For anything with an "actions" parameter:                  ║
+#  ║                                                             ║
+#  ║  * "[MSG] msg"             - Send a message to a player     ║
+#  ║  * "[MM] msg"              - Send a message as MiniMessage  ║
+#  ║  * "[BROADCAST] msg"       - Broadcast message to server    ║
+#  ║  * "[TITLE] msg;sub_msg"   - Send title to a player         ║
+#  ║  * "[ACTIONBAR] msg"       - Send action-bar message        ║
+#  ║  * "[PLAYER] command"      - Execute command as player      ║
+#  ║  * "[CONSOLE] command"     - Execute command as console     ║
+#  ║  * "[CONNECT] server"      - Switch to BungeeCord/Velocity  ║
+#  ║  * "[SOUND] sound;volume;pitch" - Play a sound for player   ║
+#  ║  * "[TELEPORT_TO_SPAWN]"   - Teleport player to spawn       ║
+#  ║                                                             ║
+#  ╚═════════════════════════════════════════════════════════════╝
 
-# DON'T CHANGE
-config_version: ${project.version}
-# Checking for a new plugin version
-check_updates: true
+config_version: ${project.version} # DON'T CHANGE
+check_updates: true # Checking for a new plugin version
 
 # Available languages: en and ru
 language: en
 
-# List of players allowed to join
 Whitelist:
   enabled: false
   players:
     - "Baraban4ik"
-# List of players not allowed to join
+
 Blacklist:
   enabled: false
   players:
     - "Baraban4ik"
 
-Join_and_Leave:
+Join:
   # Teleport to spawn when joining a server
   teleport_to_spawn: true
   # Actions to when joining a server
   actions:
-    - "[TITLE]&aWELCOME %player%;&7Thanks for using EcoLobby."
+    - "[TITLE]#aee495WELCOME;&7Thanks for using EcoLobby"
     - "[MSG]"
-    - "[MSG]  &aEcoLobby"
+    - "[MSG]  #aee495EcoLobby"
     - "[MSG]  &7Thanks for using EcoLobby"
     - "[MSG]"
-    - "[MSG]  &fWelcome!"
-    - "[MSG]  &fYou've joined the Main Lobby."
+    - "[MSG]  #f2ede0Welcome!"
+    - "[MSG]  #f2ede0You've joined the Main Lobby"
     - "[MSG]"
-    - "[MSG]  &fServer site: &aᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
+    - "[MSG]  #f2ede0Server site: #aee495ᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
     - "[MSG]"
   # Play music when joining a server
   # NoteBlockAPI required
   music:
     enabled: false
     # You need to place the .nbs file in the tracks folder
-    # And select this file here, example: track: "music.nbs".
-    track: "music.nbs"
+    # And select this file here, example: track: - "music.nbs".
+    tracks:
+      - "music.nbs"
     # NO - Don't repeat
     # YES - Repeat
     repeat: NO
-
   # Clearing chat when joining a server
   clear_chat: false
 
+Leave:
   # Clearing items when leaving a server
   clear_items: false
 
 Player:
-  # Available gamemodes: ADVENTURE, CREATIVE, SPECTATOR, SURVIVAL
-  gamemode: ADVENTURE
-  # Number of hearts the player has, 1 is half a heart
-  health: 2
-  # Player's hunger amount
-  food_level: 20
+  gamemode: ADVENTURE # Available gamemodes: ADVENTURE, CREATIVE, SPECTATOR, SURVIVAL
+  health: 2 # Number of hearts the player has, 1 is half a heart
+  food_level: 20 # Player's hunger amount
   level_exp: 0
-  # Player effects such as: SPEED
-  #
-  # If 'TIME' is 0, the effect is infinite
+  # Player effects such as: SPEED (TIME: 0 means infinite)
   # USAGE: 'EFFECT:LEVEL:TIME:PARTICLE'
   effects:
     - "SPEED:1:0:false"
 
   abilities:
-    # Disable ability to write to chat
-    disable_chat: true
-
-    # Disable ability to use commands
-    disable_commands:
+    disable_chat: true # Disable ability to write to chat
+    disable_commands: # Disable ability to use commands
       enabled: true
-      # Allowed commands to use
-      allowed:
+      tab_complete: false
+
+      allowed: # Allowed commands to use
         - 'login'
         - 'l'
         - 'register'
@@ -110,60 +113,49 @@ Player:
         - 'confirm'
         - 'changepassword'
 
+    disable_damage: true # Disable ability to take damage
+    disable_hunger: true # Disable ability to hunger
 
-    # Disable ability to take damage
-    disable_damage: true
-    # Disable ability to hunger
-    disable_hunger: true
-
-    # Disable ability to movements
-    disable_movements: false
-    # Enable ability to fly
-    enable_fly: false
+    disable_movements: false # Disable ability to movements
+    enable_fly: false # Enable ability to fly
 
     blocks:
-      # Disable ability to break blocks
-      disable_break: true
-      # Disable ability to place blocks
-      disable_place: true
-      # Disable ability to interact blocks
-      disable_interact: true
+      disable_break: true # Disable ability to break blocks
+      disable_place: true # Disable ability to place blocks
+      disable_interact: true # Disable ability to interact blocks
 
-      # Send deny messages
-      use_deny_messages: true
-      # Show the particle effects
-      use_particle_effect: true
+      use_deny_message: true # Send deny message
+      use_particle_effect: true # Show the particle effects
+
+      use_deny_sound: # Play deny sound
+        enabled: true
+        sound: BLOCK_NOTE_BLOCK_PLING
 
     items:
-      # Disable ability to move items
-      disable_move: true
-      # Disable ability to drop items
-      disable_drop: true
-      # Disable ability to pickup items
-      disable_pickup: true
+      disable_move: true # Disable ability to move items
+      disable_drop: true # Disable ability to drop items
+      disable_pickup: true # Disable ability to pickup items
+
+      # Play deny sound
+      use_deny_sound:
+        enabled: true
+        sound: BLOCK_NOTE_BLOCK_PLING
 
 World:
-  # Set the time in worlds
-  time: 6000
+  time: 6000 # Set the time in worlds
   # Setting game rules in the worlds is the same as the /gamerule command
   # Get the game rules from here https://minecraft.fandom.com/wiki/Game_rule
-  # FORMAT:
-  # * RULE: VALUE
   rules:
     doDaylightCycle: false
     doWeatherCycle: false
     doMobSpawning: false
-    
+
   jump_into_the_void:
     enabled: true
-    # The height at which this should work
-    height: 0.0
-    # Execute actions when jumping into the void
+    height: 0.0 # The height at which this should work
     actions:
-      - "[TELEPORT_TO_SPAWN]"
+      - "[TELEPORT_TO_SPAWN]" # Execute actions when jumping into the void
 
 Hiders:
-  # Hide message about join, leave, death etc.
-  hide_stream: true
-  # Hide the players from each other
-  hide_players: true
+  hide_stream: true # Hide messages about join, leave, death, etc.
+  hide_players: true # Hide players from each other

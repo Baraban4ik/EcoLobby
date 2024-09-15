@@ -1,31 +1,41 @@
-#   ____  ___  _____    __    _____  ____  ____  _  _
-#  ( ___)/ __)(  _  )  (  )  (  _  )(  _ \(  _ \( \/ )  AUTHOR: Baraban4ik
-#   )__)( (__  )(_)(    )(__  )(_)(  ) _ < ) _ < \  /   VERSION: ${project.version}
-#  (____)\___)(_____)  (____)(_____)(____/(____/ (__)
+#  ╔═════════════════════════════════════════════════════════════╗
+#  ║                                                             ║
+#  ║      ____  ___  _____    __    _____  ____  ____  _  _      ║
+#  ║     ( ___)/ __)(  _  )  (  )  (  _  )(  _ \(  _ \( \/ )     ║
+#  ║      )__)( (__  )(_)(    )(__  )(_)(  ) _ < ) _ < \  /      ║
+#  ║     (____)\___)(_____)  (____)(_____)(____/(____/ (__)      ║
+#  ║                                                             ║
+#  ╚═════════════════════════════════════════════════════════════╝
 #
-#  PLUGIN PLACEHOLDERS:
-#  * %prfx% - Prefix in clause "prefix"
-#  * %NL% - New line
-#  * %player% - Player nickname
-#  * %online% - Server online
-#
-# Also you can use placeholders from PlaceholderAPI.
-# Also you can hex colors (1.16.5 and higher).
-# * Format: #color
-# * Example: #ffaa00
+#  ╔═════════════════════════════════════════════════════════════╗
+#  ║                     PLUGIN PLACEHOLDERS                     ║
+#  ║                                                             ║
+#  ║  * %prfx%   - Prefix in clause "prefix"                     ║
+#  ║  * %player% - Player nickname                               ║
+#  ║  * %online% - Server online                                 ║
+#  ║  * %NL%     - New line                                      ║
+#  ║                                                             ║
+#  ║  You can also use placeholders from PlaceholderAPI          ║
+#  ║  and hex colors (1.16.5 and higher)                         ║
+#  ║  * Format: #color                                           ║
+#  ║  * Example: #ffaa00                                         ║
+#  ║                                                             ║
+#  ║  If you want to disable a message                           ║
+#  ║  you can delete it completely or leave it blank             ║
+#  ║                                                             ║
+#  ╚═════════════════════════════════════════════════════════════╝
 
-# If you want to disable a message you can delete it completely or leave it blank.
-prefix: "%NL%  &7( &aEcoLobby &7)  &f"
-no_permission: "%prfx%You don't have permission!%NL% "
+prefix: "%NL%  &7( #aee495EL &7)  #f2ede0"
+no_permission: "%prfx%you don't have permission!%NL% "
 
-whitelist_kick_message: "&aEcoLobby %NL%%NL%&fYou are not on the server whitelist!"
-blacklist_kick_message: "&aEcoLobby %NL%%NL%&fYou are on the server blacklist!"
+whitelist_kick: "#f0ff00you are not on the server whitelist!"
+blacklist_kick: "#f0ff00you are on the server blacklist!"
 
-deny_chat_message: "%prfx%Sorry, but you can't use chat! %NL% "
-deny_commands_message: "%prfx%Sorry, but you can't use commands! %NL% "
-deny_break_blocks_message: "%prfx%Sorry, but you can't break blocks! %NL% "
-deny_place_blocks_message: "%prfx%Sorry, but you can't place blocks! %NL% "
-deny_interact_blocks_message: "%prfx%Sorry, but you can't interact blocks! %NL% "
+deny_chat: "%prfx%Sorry, but you can't use chat! %NL% "
+deny_commands: "%prfx%Sorry, but you can't use commands! %NL% "
+deny_break_blocks: "%prfx%Sorry, but you can't break blocks! %NL% "
+deny_place_blocks: "%prfx%Sorry, but you can't place blocks! %NL% "
+deny_interact_blocks: "%prfx%Sorry, but you can't interact blocks! %NL% "
 
 teleported_spawn: "%prfx%Teleportation a spawn! %NL% "
 null_spawn: "%prfx%Spawn does not exist, teleportation is impossible! %NL% "

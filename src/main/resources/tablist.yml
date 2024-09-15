@@ -3,16 +3,17 @@ enabled: true
 # TabList update time in seconds
 refresh: 1
 header:
-  - "                                                          "
-  - "&a&lsᴇʀᴠᴇʀɴᴀᴍᴇ"
-  - ""
-  - "&aOnline:"
-  - "&7%online%"
-  - ""
+  - '                                                          '
+  - '#aee495&lsᴇʀᴠᴇʀɴᴀᴍᴇ'
+  - '#aee495&n     '
+  - ''
+  - '#aee495server online'
+  - '&f%online% &7/ &f250 &7⛄'
+  - ''
 footer:
-  - ""
-  - "&aᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
-  - ""
+  - ''
+  - '#f2ede0site: #aee495ᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ'
+  - ''
 
 tabPrefix: ""
 tabSuffix: ""
