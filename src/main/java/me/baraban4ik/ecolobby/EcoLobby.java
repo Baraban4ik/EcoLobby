@@ -3,12 +3,19 @@ package me.baraban4ik.ecolobby;
 import me.baraban4ik.ecolobby.commands.LobbyCommand;
 import me.baraban4ik.ecolobby.commands.SetSpawnCommand;
 import me.baraban4ik.ecolobby.commands.SpawnCommand;
+import me.baraban4ik.ecolobby.enums.ConfigPath;
+import me.baraban4ik.ecolobby.enums.TablistPath;
 import me.baraban4ik.ecolobby.listeners.*;
 import me.baraban4ik.ecolobby.managers.TabManager;
-import me.baraban4ik.ecolobby.utils.Files;
+import me.baraban4ik.ecolobby.utils.Chat;
+import me.baraban4ik.ecolobby.utils.Configurations;
 import me.baraban4ik.ecolobby.utils.Update;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,107 +23,123 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-import static me.baraban4ik.ecolobby.utils.Chat.sendMessage;
+import static me.baraban4ik.ecolobby.utils.Chat.*;
 
-public final class EcoLobby extends JavaPlugin {
+public class EcoLobby extends JavaPlugin {
 
-    Files files = new Files(this, "config.yml",
-            "language/messages.yml",
-            "language/messages_ru.yml",
-            "spawn.yml",
-            "tablist.yml",
-            "items.yml"
-    );
-
-    public Files getFiles() {
-        return files;
-    }
-
-    public static EcoLobby instance;
+    private static Configurations configurations;
+    private static EcoLobby instance;
 
     public static FileConfiguration config;
     public static FileConfiguration messages;
-    public static FileConfiguration items;
-    public static FileConfiguration spawn;
-    public static FileConfiguration tablist;
 
-    public static boolean placeholderAPI = false;
-    public static boolean noteBlockAPI = false;
-    public static boolean updateAvailable = false;
-    public static boolean legacyItems = false;
+    public static FileConfiguration itemsConfig;
+    public static FileConfiguration spawnConfig;
+    public static FileConfiguration tablistConfig;
+
+    public static boolean PLACEHOLDER_API = false;
+    public static boolean NOTE_BLOCK_API = false;
+
+    public static boolean UPDATE_AVAILABLE = false;
+    public static String UPDATE_VERSION = "";
+
+    TabManager tab = new TabManager();
 
     @Override
     public void onLoad() {
         instance = this;
-
-        this.files.load();
+        configurations = new Configurations(this,
+                "config",
+                "language/messages",
+                "language/messages_ru",
+                "spawn",
+                "tablist",
+                "items"
+        );
+        configurations.load();
         this.loadConfigurations();
     }
 
-    TabManager tab = new TabManager();
     @Override
     public void onEnable() {
+        if (config.getBoolean(ConfigPath.CHECK_UPDATES.getPath())) this.checkUpdate();
 
-        placeholderAPI = this.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
-        noteBlockAPI = this.getServer().getPluginManager().isPluginEnabled("NoteBlockAPI");
+        PLACEHOLDER_API = getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
+        NOTE_BLOCK_API = getServer().getPluginManager().isPluginEnabled("NoteBlockAPI");
 
         this.registerCommands();
         this.registerListeners();
 
-        if (config.getBoolean("check_updates")) this.checkUpdate();
-        else updateAvailable = false;
-
-        legacyItems = getServerVersion() < 1.14f;
-        Metrics metrics = new Metrics(this, 14978);
-
-        sendMessage(MESSAGES.ENABLE_MESSAGE, Bukkit.getConsoleSender());
+        new Metrics(this, 14978);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        if (getServerVersion() >= 1.13 && tablist.getBoolean("enabled")) {
-            tab.setHeader(tablist.getStringList("header"));
-            tab.setFooter(tablist.getStringList("footer"));
-            tab.setPrefix(tablist.getString("tabPrefix"));
-            tab.setSuffix(tablist.getString("tabSuffix"));
-
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    tab.update(player);
-                }
-            }, 0L, tablist.getInt("refresh") * 20L);
-        }
+        if (tablistConfig.getBoolean(TablistPath.ENABLED.getPath()))
+            this.sendTablist();
         updateWorld();
+
+        Chat.sendMessage(MESSAGES.ENABLE_MESSAGE, Bukkit.getConsoleSender());
     }
 
-    @Override
-    public void onDisable() {
-        this.files = null;
+    private void sendTablist() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                tab.update(player);
+            }
+        }, 0L, tablistConfig.getInt(TablistPath.REFRESH.getPath()) * 20L);
+    }
+
+    public static EcoLobby getInstance() {
+        return instance;
+    }
+    public static Configurations getConfigurations() {
+        return configurations;
     }
 
     private void registerCommands() {
-        this.getServer().getPluginCommand("ecolobby").setExecutor(new LobbyCommand());
-        this.getServer().getPluginCommand("setspawn").setExecutor(new SetSpawnCommand());
-        this.getServer().getPluginCommand("spawn").setExecutor(new SpawnCommand());
+        getServer().getPluginCommand("ecolobby").setExecutor(new LobbyCommand());
+        getServer().getPluginCommand("setspawn").setExecutor(new SetSpawnCommand());
+        getServer().getPluginCommand("spawn").setExecutor(new SpawnCommand());
     }
     private void registerListeners() {
-        this.getServer().getPluginManager().registerEvents(new HiderListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ItemsListener(), this);
-        this.getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        this.getServer().getPluginManager().registerEvents(new LeaveListeners(), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        this.getServer().getPluginManager().registerEvents(new PreJoinListener(), this);
-        this.getServer().getPluginManager().registerEvents(new WorldListener(), this);
+        getServer().getPluginManager().registerEvents(new HiderListener(), this);
+        getServer().getPluginManager().registerEvents(new ItemsListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new LeaveListeners(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new PreJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldListener(), this);
     }
 
     private void updateWorld() {
         for (World world : Bukkit.getWorlds()) {
-            world.setTime(config.getLong("World.time"));
-            ConfigurationSection rules = config.getConfigurationSection("World.rules");
+            ConfigurationSection rules = config.getConfigurationSection(ConfigPath.WORLD_RULES.getPath());
+
+            if (rules == null) return;
+            long time = config.getLong(ConfigPath.WORLD_TIME.getPath());
 
             for (String rule : rules.getKeys(false)) {
-                world.setGameRuleValue(rule, rules.getString(rule));
+                GameRule<?> gameRule = GameRule.getByName(rule);
+
+                if (gameRule != null) {
+                    String value = rules.getString(rule);
+                    Object parsedValue;
+
+                    if (gameRule.getType() == Boolean.class) {
+                        parsedValue = Boolean.parseBoolean(value);
+                    }
+                    else if (gameRule.getType() == Integer.class) {
+                        parsedValue = Integer.parseInt(value);
+                    }
+                    else continue;
+
+                    world.setGameRule((GameRule<Object>) gameRule, parsedValue);
+                }
             }
+            world.setTime(time);
         }
     }
 
@@ -124,10 +147,37 @@ public final class EcoLobby extends JavaPlugin {
         new Update().getVersion(version ->
         {
             if (!this.getDescription().getVersion().equals(version)) {
-				updateAvailable = true;
-                sendMessage(MESSAGES.NEW_VERSION, Bukkit.getConsoleSender());
+                UPDATE_AVAILABLE = true;
+                UPDATE_VERSION = version;
+
+                List<Component> NEW_VERSION = Arrays.asList(
+                        Component.text(" __       ", TextColor.color(0xAEE495)),
+                        Component.text("|__", TextColor.color(0xAEE495))
+                                .append(Component.text(" |    ", TextColor.color(0xAEE495)))
+                                .append(Component.text("Plugin update available!", TextColor.color(0xf2ede0))),
+                        Component.text("|__", TextColor.color(0xAEE495))
+                                .append(Component.text(" |__  ", TextColor.color(0xAEE495)))
+                                .append(Component.text("Current version", TextColor.color(0xf2ede0)))
+                                .append(Component.text(" — ", NamedTextColor.GRAY))
+                                .append(Component.text(instance.getDescription().getVersion(), TextColor.color(0xAEE495)))
+                                .append(Component.text(" (", NamedTextColor.GRAY))
+                                .append(Component.text(EcoLobby.UPDATE_VERSION, TextColor.color(0xAEE495)))
+                                .append( Component.text(")", NamedTextColor.GRAY)),
+                        Component.space()
+                );
+                sendMessage(NEW_VERSION, Bukkit.getConsoleSender());
             }
         });
+    }
+
+    public void reload() {
+        configurations.reload();
+        this.loadConfigurations();
+
+        if (tablistConfig.getBoolean(TablistPath.ENABLED.getPath())) {
+            Bukkit.getOnlinePlayers().forEach(player -> tab.update(player));
+        }
+        updateWorld();
     }
 
     public Float getServerVersion() {
@@ -138,39 +188,28 @@ public final class EcoLobby extends JavaPlugin {
         return Float.parseFloat(versionMinecraft.substring(versionMinecraft.indexOf(":") + 1, versionMinecraft.lastIndexOf(".")));
     }
 
-    public void reload() {
-        this.files.reload();
-        this.loadConfigurations();
-
-        if (getServerVersion() >= 1.13 && tablist.getBoolean("enabled")) {
-            tab.setHeader(tablist.getStringList("header"));
-            tab.setFooter(tablist.getStringList("footer"));
-            tab.setPrefix(tablist.getString("tabPrefix"));
-            tab.setSuffix(tablist.getString("tabSuffix"));
-        }
-        updateWorld();
-    }
 
     private void loadLanguage() {
-        messages = this.files.get("language/messages.yml");
+        messages = configurations.getConfig("language/messages");
 
-        if (config.getString("language").equalsIgnoreCase("ru"))
-            messages = this.files.get("language/messages_ru.yml");
+        if (config.getString(ConfigPath.LANGUAGE.getPath()).equalsIgnoreCase("ru"))
+            messages = configurations.getConfig("language/messages_ru");
     }
+
     private void loadConfigurations() {
-        config = this.files.get("config.yml");
-        spawn = this.files.get("spawn.yml");
-        items = this.files.get("items.yml");
-        tablist = this.files.get("tablist.yml");
+        config = configurations.getConfig("config");
+        spawnConfig = configurations.getConfig("spawn");
+        itemsConfig = configurations.getConfig("items");
+        tablistConfig = configurations.getConfig("tablist");
 
         this.loadLanguage();
 
-        if (!Objects.equals(config.get("config_version"), this.getDescription().getVersion())) {
+        if (!Objects.equals(config.get(ConfigPath.CONFIG_VERSION.getPath()), this.getDescription().getVersion())) {
 
             File file = new File(this.getDataFolder(), "config.yml");
             file.renameTo(new File(this.getDataFolder(), "config.yml-old"));
 
-            this.files.reload();
+            configurations.reload();
         }
     }
 }
