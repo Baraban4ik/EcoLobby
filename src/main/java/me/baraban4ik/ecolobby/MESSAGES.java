@@ -1,46 +1,112 @@
 package me.baraban4ik.ecolobby;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 
 import java.util.Arrays;
 import java.util.List;
-public interface MESSAGES {
-    List<String> HELP_MESSAGE = Arrays.asList(
-            "",
-            "  &aEcoLobby &7( &fHelp page &7)",
-            "",
-            "  &f/el help &7- Open this page",
-            "  &f/el reload &7- Reload plugin configuration",
-            "  &f/el setspawn (main / first) &7- Set spawn main or first",
-            "  &f/el spawn &7- Teleport to the spawn",
-            "  &f/el give (player) <item_name> &7- Give out a custom item",
-            " "
-    );
-    List<String> ENABLE_MESSAGE = Arrays.asList
-            (
-                    " ",
-                    "&a ____  ___  _____    __    _____  ____  ____  _  _",
-                    "&a( ___)/ __)(  _  )  (  )  (  _  )(  _ \\(  _ \\( \\/ )",
-                    "&a )__)( (__  )(_)(    )(__  )(_)(  ) _ < ) _ < \\  /",
-                    "&a(____)\\___)(_____)  (____)(_____)(____/(____/ (__)",
-                    "",
-                    " AUTHOR: &aBaraban4ik",
-                    " VERSION: &a" + EcoLobby.instance.getDescription().getVersion(),
-                    "",
-                    " PlaceholderAPI: &a" + EcoLobby.placeholderAPI,
-                    " NoteBlockAPI: &a" + EcoLobby.noteBlockAPI,
-                    " ",
-                    "ᴇᴄᴏ ᴅᴇᴠ - development studio",
-                    " "
-            );
-    String ONLY_PLAYER = "  &7( &aEcoLobby &7)  &fThis command is only available to players!";
-    String NEW_VERSION = "  &7( &aEcoLobby &7)  &fThere is a new update available.";
-    String GIVE_USAGE = "  &7( &aUsage &7)  &f/el give (player) <item_name>";
-    String SETSPAWN_USAGE = "  &7( &aUsage &7)  &f/el setspawn (main / first)";
 
-    String PLUGIN_RELOADED = "  &7( &aEcoLobby &7)  &fPlugin successfully reloaded!";
-    String ITEM_NOT_FOUND = "  &7( &aEcoLobby &7)  &fItem not found!";
-    String PLAYER_NOT_FOUND = "  &7( &aEcoLobby &7)  &fPlayer not found!";
-    String SUCCESSFULLY_GIVE_ITEM = "  &7( &aEcoLobby &7)  &fItem issued successfully";
-    String SUCCESSFULLY_SETSPAWN = "  &7( &aEcoLobby &7)  &fSpawn successfully installed.";
+
+public class MESSAGES {
+
+    public static List<Component> HELP_MESSAGE = Arrays.asList(
+            Component.space(),
+            Component.text(" EcoLobby", TextColor.color(0xAEE495))
+                    .append(Component.text(" | ", NamedTextColor.GRAY))
+                    .append(Component.text("help page", TextColor.color(0xf2ede0))),
+            Component.space(),
+            Component.text(" /el help", TextColor.color(0xf2ede0))
+                    .append(Component.text(" - open this page", NamedTextColor.GRAY)),
+            Component.text(" /el reload", TextColor.color(0xf2ede0))
+                    .append(Component.text(" - Reload plugin configuration", NamedTextColor.GRAY)),
+            Component.text(" /el setspawn", TextColor.color(0xf2ede0))
+                    .append(Component.text(" (main/first) - reload plugin configuration", NamedTextColor.GRAY)),
+            Component.text(" /el spawn", TextColor.color(0xf2ede0))
+                    .append(Component.text(" - teleport to the spawn", NamedTextColor.GRAY)),
+            Component.text(" /el give", TextColor.color(0xf2ede0))
+                    .append(Component.text(" (player) <item> - give out a custom item", NamedTextColor.GRAY)),
+            Component.space()
+    );
+
+
+    public static List<Component> ENABLE_MESSAGE = Arrays.asList(
+            Component.text(" __       ", TextColor.color(0xAEE495)),
+            Component.text("|__", TextColor.color(0xAEE495))
+                    .append(Component.text(" |    ", TextColor.color(0xAEE495)))
+                    .append(Component.text("EcoLobby v" + EcoLobby.getInstance().getDescription().getVersion(), TextColor.color(0xf2ede0)))
+                    .append(Component.space())
+                    .append(Component.text("(release)", NamedTextColor.GRAY)),
+            Component.text("|__", TextColor.color(0xAEE495))
+                    .append(Component.text(" |__  ", TextColor.color(0xAEE495)))
+                    .append(Component.text("Developer", TextColor.color(0xf2ede0)))
+                    .append(Component.text(" — ", NamedTextColor.GRAY))
+                    .append(Component.text("Baraban4ik", TextColor.color(0xAEE495))),
+            Component.space()
+    );
+
+
+    public static Component ONLY_PLAYER = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("This command is only available to players!", TextColor.color(0xf2ede0)))
+            .build();
+
+
+    public static Component GIVE_USAGE = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" usage: ", TextColor.color(0xAEE495)))
+            .append(Component.text(") ", NamedTextColor.GRAY))
+            .append(Component.space())
+            .append(Component.text("/el give", TextColor.color(0xf2ede0)))
+            .append(Component.space())
+            .append(Component.text("(player) <item>", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component SETSPAWN_USAGE = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" usage: ", TextColor.color(0xAEE495)))
+            .append(Component.text(") ", NamedTextColor.GRAY))
+            .append(Component.space())
+            .append(Component.text("/el setspawn", TextColor.color(0xf2ede0)))
+            .append(Component.space())
+            .append(Component.text("(main/first)", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component PLUGIN_RELOADED = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("Plugin successfully reloaded!", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component ITEM_NOT_FOUND = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("Item with this name not found!", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component SUCCESSFULLY_GIVE_ITEM = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("Item issued successfully!", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component PLAYER_NOT_FOUND = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("Player is not present on the server!", TextColor.color(0xf2ede0)))
+            .build();
+
+    public static Component SUCCESSFULLY_SETSPAWN = Component.text()
+            .append(Component.text(" (", NamedTextColor.GRAY))
+            .append(Component.text(" EL ", TextColor.color(0xAEE495)))
+            .append(Component.text(")  ", NamedTextColor.GRAY))
+            .append(Component.text("Spawn successfully installed!", TextColor.color(0xf2ede0)))
+            .build();
 }
