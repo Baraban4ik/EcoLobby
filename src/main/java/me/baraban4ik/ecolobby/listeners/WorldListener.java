@@ -1,5 +1,6 @@
 package me.baraban4ik.ecolobby.listeners;
 
+import me.baraban4ik.ecolobby.enums.ConfigPath;
 import me.baraban4ik.ecolobby.managers.ActionManager;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -14,16 +15,17 @@ import static me.baraban4ik.ecolobby.EcoLobby.config;
 
 public class WorldListener implements Listener {
     @EventHandler (priority = EventPriority.LOWEST)
-    public void JumpIntoTheVoid(PlayerMoveEvent event) {
+    public void onJumpVoid(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        double height = config.getDouble("World.jump_into_the_void.height");
-        List<String> actions = config.getStringList("World.jump_into_the_void.actions");
+        double height = config.getDouble(ConfigPath.VOID_HEIGHT.getPath());
+        List<String> actions = config.getStringList(ConfigPath.VOID_ACTIONS.getPath());
 
-        if (config.getBoolean("World.jump_into_the_void.enabled")) {
+        if (config.getBoolean(ConfigPath.VOID.getPath())) {
             if (player.getLocation().getY() <= height) {
                 player.getPassengers().stream().filter(entity -> entity.getType() == EntityType.AREA_EFFECT_CLOUD
                         || entity.getType() == EntityType.PLAYER).forEach(player::removePassenger);
+
                 ActionManager.execute(player, actions);
             }
         }

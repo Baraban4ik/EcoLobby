@@ -1,11 +1,11 @@
 package me.baraban4ik.ecolobby.managers;
 
 
-import de.tr7zw.nbtapi.NBT;
-import de.tr7zw.nbtapi.iface.ReadWriteNBT;
-import de.tr7zw.nbtapi.iface.ReadableItemNBT;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.MESSAGES;
+import me.baraban4ik.ecolobby.enums.ItemsPath;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.utils.Format;
 import org.bukkit.Bukkit;
@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -20,125 +21,108 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static me.baraban4ik.ecolobby.EcoLobby.*;
 
 public class ItemManager {
-    private static ItemStack createItem(@NotNull Player player, @NotNull String itemName) {
-        ConfigurationSection itemSection = items.getConfigurationSection("Items." + itemName);
-        if (itemSection == null) return null;
+    private static ItemStack createItem(@NotNull Player player, @NotNull String itemName)  {
+        ConfigurationSection itemSection = itemsConfig.getConfigurationSection( "Items." + itemName);
 
-        String materialSection = itemSection.getString("material");
-        int amount = itemSection.getInt("amount");
-        int data = itemSection.getInt("data");
-
-        String displayName = Format.format(itemSection.getString("name"), player);
-        List<String> formatLore = itemSection.getStringList("lore").stream()
-                .map(line -> Format.format(line, player))
-                .collect(Collectors.toList());
+        String material = itemSection.getString(ItemsPath.MATERIAL.getPath(), "STONE");
+        Material itemMaterial = Material.getMaterial(material.toUpperCase());
 
         boolean isHead = false;
         boolean isBaseHead = false;
-        Material itemMaterial = Material.getMaterial(materialSection);
 
-        if (materialSection.startsWith("head-")) {
-            if (!legacyItems)
-                itemMaterial = Material.PLAYER_HEAD;
-            else
-                itemMaterial = Material.LEGACY_SKULL_ITEM;
+        int amount = itemSection.getInt(ItemsPath.AMOUNT.getPath());
+
+        String displayName = Format.format(itemSection.getString(ItemsPath.NAME.getPath()), player);
+        List<String> formatLore = itemSection.getStringList(ItemsPath.LORE.getPath()).stream()
+                .map(line -> Format.format(line, player))
+                .collect(Collectors.toList());
+
+        if (material.startsWith("head-")) {
+            itemMaterial = Material.PLAYER_HEAD;
             isHead = true;
         }
-        if (materialSection.startsWith("basehead-")) {
-            if (!legacyItems)
-                itemMaterial = Material.PLAYER_HEAD;
-            else
-                itemMaterial = Material.LEGACY_SKULL_ITEM;
+        else if (material.startsWith("basehead-")) {
+            itemMaterial = Material.PLAYER_HEAD;
             isBaseHead = true;
         }
-        ItemStack item = new ItemStack(itemMaterial, amount, (short) data);
-        ItemMeta itemMeta = item.getItemMeta();
 
-        if (isHead) {
-            if (legacyItems) item.setDurability((short) 3);
+        if (itemMaterial != null) {
+            ItemStack item = new ItemStack(itemMaterial, amount);
+            ItemMeta itemMeta = item.getItemMeta();
 
-            String owner = materialSection.replace("head-", "");
-            owner = Format.replacePlaceholders(owner, player);
+            if (isHead) {
+                String owner = material.replace("head-", "");
+                owner = Format.format(owner, player);
 
-            SkullMeta skullMeta = (SkullMeta) itemMeta;
-            skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(Bukkit.getPlayer(owner).getUniqueId()));
-        }
-        if (isBaseHead) {
-            if (legacyItems) item.setDurability((short) 3);
+                SkullMeta skullMeta = (SkullMeta) itemMeta;
+                skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
+            }
+            if (isBaseHead) {
+                String base64 = material.replace("basehead-", "");
+                SkullMeta skullMeta = (SkullMeta) itemMeta;
 
-            String base64 = materialSection.replace("basehead-", "");
-            NBT.modify(item, nbt -> {
-                final ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+                profile.getProperties().put("textures", new Property("textures", base64));
 
-                skullOwnerCompound.setUUID("Id", UUID.randomUUID());
+                try {
+                    Field profileField = skullMeta.getClass().getDeclaredField("profile");
+                    profileField.setAccessible(true);
+                    profileField.set(skullMeta, profile);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            itemMeta.setDisplayName(displayName);
+            itemMeta.setLore(formatLore);
 
-                skullOwnerCompound.getOrCreateCompound("Properties")
-                        .getCompoundList("textures")
-                        .addCompound()
-                        .setString("Value", base64);
-            });
-        }
-
-        itemMeta.setDisplayName(displayName);
-        itemMeta.setLore(formatLore);
-
-        if (!legacyItems) {
-            NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.instance, "ECO_ITEM");
+            NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
             itemMeta.getPersistentDataContainer().set(ECO_ITEM, PersistentDataType.STRING, itemName);
-        }
-        else {
-            NBT.modify(item, nbt -> {
-                nbt.setString("ECO_ITEM", itemName);
-            });
-        }
-        item.setItemMeta(itemMeta);
 
-        return item;
+            item.setItemMeta(itemMeta);
+
+            return item;
+        }
+        return null;
     }
 
     public static boolean isEcoItem(ItemStack item, String itemName) {
-        if (!legacyItems) {
-            NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.instance, "ECO_ITEM");
-            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 
-            if (container.has(ECO_ITEM, PersistentDataType.STRING))
-                return Objects.equals(container.get(ECO_ITEM, PersistentDataType.STRING), itemName);
-        }
-        else {
-            String tag = NBT.get(item, (Function<ReadableItemNBT, String>) nbt -> nbt.getString("ECO_ITEM"));
-            return tag.equals(itemName);
-        }
+        NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
+        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+
+        if (container.has(ECO_ITEM, PersistentDataType.STRING))
+            return Objects.equals(container.get(ECO_ITEM, PersistentDataType.STRING), itemName);
+
         return false;
     }
 
     public static void setItems(Player player) {
-        ConfigurationSection itemsSection = items.getConfigurationSection("Items");
-        if (itemsSection == null) return;
+        ConfigurationSection items = itemsConfig.getConfigurationSection(ItemsPath.ITEMS.getPath());
+        if (items == null) return;
 
-        for (String itemName : itemsSection.getKeys(false)) {
-            int slot = itemsSection.getInt(itemName + ".slot");
+        for (String itemName : items.getKeys(false)) {
+            int slot = items.getInt(itemName + ".slot");
 
             player.getInventory().setItem(slot, createItem(player, itemName));
         }
     }
     public static void giveItem(Player player, String itemName) {
-        ConfigurationSection itemsSection = items.getConfigurationSection("Items");
-
+        ConfigurationSection items = itemsConfig.getConfigurationSection(ItemsPath.ITEMS.getPath());
         ItemStack item = createItem(player, itemName);
-        if (item == null || itemsSection == null) {
+
+        if (item == null || items == null) {
             Chat.sendMessage(MESSAGES.ITEM_NOT_FOUND, player);
             return;
         }
-
         player.getInventory().addItem(item);
     }
 }
