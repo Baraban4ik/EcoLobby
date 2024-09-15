@@ -11,10 +11,12 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+
+
 public class Update {
 
     public void getVersion(final Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(EcoLobby.instance, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(EcoLobby.getInstance(), () -> {
             try {
                 URL url = new URL("https://api.github.com/repos/Baraban4ik/ecolobby/releases/latest");
                 String response = getResponse(url);
@@ -22,7 +24,7 @@ public class Update {
 
                 consumer.accept(latestVersion);
             } catch (IOException exception) {
-                EcoLobby.instance.getLogger().info("Unable to check for updates: " + exception.getMessage());
+                EcoLobby.getInstance().getLogger().info("Unable to check for updates: " + exception.getMessage());
             }
         });
     }
