@@ -22,9 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.baraban4ik.ecolobby.EcoLobby.*;
@@ -41,7 +39,7 @@ public class ItemManager {
 
         int amount = itemSection.getInt(ItemsPath.AMOUNT.getPath());
 
-        String displayName = Format.format(itemSection.getString(ItemsPath.NAME.getPath()), player);
+        String displayName = Format.format(itemSection.getString(ItemsPath.NAME.getPath(), ""), player);
         List<String> formatLore = itemSection.getStringList(ItemsPath.LORE.getPath()).stream()
                 .map(line -> Format.format(line, player))
                 .collect(Collectors.toList());
@@ -82,7 +80,9 @@ public class ItemManager {
                 }
             }
             itemMeta.setDisplayName(displayName);
-            itemMeta.setLore(formatLore);
+            if (!formatLore.isEmpty() && formatLore != null) {
+                itemMeta.setLore(formatLore);
+            }
 
             NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
             itemMeta.getPersistentDataContainer().set(ECO_ITEM, PersistentDataType.STRING, itemName);
