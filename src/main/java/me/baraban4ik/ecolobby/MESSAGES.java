@@ -22,7 +22,7 @@ public class MESSAGES {
             Component.text(" /el reload", TextColor.color(0xf2ede0))
                     .append(Component.text(" - Reload plugin configuration", NamedTextColor.GRAY)),
             Component.text(" /el setspawn", TextColor.color(0xf2ede0))
-                    .append(Component.text(" (main/first) - reload plugin configuration", NamedTextColor.GRAY)),
+                    .append(Component.text(" (main/first) - sets the main or first spawn", NamedTextColor.GRAY)),
             Component.text(" /el spawn", TextColor.color(0xf2ede0))
                     .append(Component.text(" - teleport to the spawn", NamedTextColor.GRAY)),
             Component.text(" /el give", TextColor.color(0xf2ede0))
