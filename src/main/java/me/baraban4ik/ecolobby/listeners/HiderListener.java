@@ -25,11 +25,10 @@ public class HiderListener implements Listener {
             if (hidePlayers) {
                 otherPlayer.hidePlayer(EcoLobby.getInstance(), event.getPlayer());
                 event.getPlayer().hidePlayer(EcoLobby.getInstance(), otherPlayer);
+                continue;
             }
-            else {
-                otherPlayer.showPlayer(EcoLobby.getInstance(), event.getPlayer());
-                event.getPlayer().showPlayer(EcoLobby.getInstance(), otherPlayer);
-            }
+            otherPlayer.showPlayer(EcoLobby.getInstance(), event.getPlayer());
+            event.getPlayer().showPlayer(EcoLobby.getInstance(), otherPlayer);
         }
     }
     @EventHandler
