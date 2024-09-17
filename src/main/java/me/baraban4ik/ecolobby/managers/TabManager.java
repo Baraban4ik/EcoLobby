@@ -14,8 +14,8 @@ public class TabManager {
         List<String> header = tablistConfig.getStringList(TablistPath.HEADER.getPath());
         List<String> footer = tablistConfig.getStringList(TablistPath.FOOTER.getPath());
 
-        String prefix = tablistConfig.getString(TablistPath.PREFIX.getPath());
-        String suffix = tablistConfig.getString(TablistPath.SUFFIX.getPath());
+        String prefix = Format.format(tablistConfig.getString(TablistPath.PREFIX.getPath()), player);
+        String suffix = Format.format(tablistConfig.getString(TablistPath.SUFFIX.getPath()), player);
 
         player.setPlayerListName(Format.format(prefix, player) + player.getName() + Format.format(suffix, player));
 
