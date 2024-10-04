@@ -8,8 +8,8 @@ public class TitleAction implements PlayerAction {
     @Override
     public void execute(Player player, String action) {
         String[] actionArgs = action.split(";");
-        player.sendTitle (
-                Format.format(actionArgs[0], player),
-                Format.format(actionArgs[1], player), 10, 20, 70);
+        player.sendTitle (Format.format(actionArgs[0], player),
+                Format.format(actionArgs[1], player), 10, 20, 70
+        );
     }
 }

@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 public class ShowPlayersAction implements PlayerAction {
     @Override
     public void execute(Player player, String action) {
-        for (Player otherPlayer : Bukkit.getServer().getOnlinePlayers()) {
-            player.showPlayer(EcoLobby.getInstance(), otherPlayer);
-        }
+        Bukkit.getServer().getOnlinePlayers().forEach(
+                otherPlayer -> player.showPlayer(EcoLobby.getInstance(), otherPlayer)
+        );
     }
 }
