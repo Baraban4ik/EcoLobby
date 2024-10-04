@@ -1,4 +1,3 @@
-# Works with version 1.13 and higher
 enabled: true
 # TabList update time in seconds
 refresh: 1
