@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.MESSAGES;
 import me.baraban4ik.ecolobby.commands.base.BaseCommand;
-import me.baraban4ik.ecolobby.enums.MessagesPath;
+
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.enums.SpawnType;
 import me.baraban4ik.ecolobby.managers.ItemManager;
 import me.baraban4ik.ecolobby.utils.Chat;
@@ -30,7 +31,7 @@ public class LobbyCommand extends BaseCommand {
                     case "reload":
                         if (hasPermission(sender, "ecolobby.command.reload")) {
 
-                            Chat.sendMessage(MESSAGES.PLUGIN_RELOADED, sender);
+                            Chat.sendMessage(MESSAGES.PLUGIN_RELOADED(), sender);
 
                             EcoLobby.getInstance().reload();
                         }
@@ -41,7 +42,7 @@ public class LobbyCommand extends BaseCommand {
 
                         if (hasPermission(player, "ecolobby.command.setspawn")) {
                             SpawnManager.setSpawn(player, SpawnType.MAIN);
-                            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
+                            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN(), player);
                         }
                         return;
                     }
@@ -59,7 +60,7 @@ public class LobbyCommand extends BaseCommand {
                         Player player = (Player) sender;
 
                         if (hasPermission(player, "ecolobby.command.give")) {
-                            Chat.sendMessage(MESSAGES.GIVE_USAGE, player);
+                            Chat.sendMessage(MESSAGES.GIVE_USAGE(), player);
                         }
                         return;
 
@@ -72,14 +73,14 @@ public class LobbyCommand extends BaseCommand {
                         Player player = (Player) sender;
 
                         if (hasPermission(player, "ecolobby.command.setspawn")) {
-                            SpawnType type = SpawnType.valueOf(args[1]);
+                            SpawnType type = SpawnType.valueOf(args[1].toUpperCase());
 
                             if (type != SpawnType.MAIN && type != SpawnType.FIRST) {
-                                Chat.sendMessage(MESSAGES.SETSPAWN_USAGE, player);
+                                Chat.sendMessage(MESSAGES.SETSPAWN_USAGE(), player);
                                 return;
                             }
                             SpawnManager.setSpawn(player, type);
-                            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
+                            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN(), player);
                         }
                         return;
                     }
@@ -100,7 +101,7 @@ public class LobbyCommand extends BaseCommand {
                         Player player = Bukkit.getPlayer(args[1]);
 
                         if (player == null) {
-                            Chat.sendMessage(MESSAGES.PLAYER_NOT_FOUND, sender);
+                            Chat.sendMessage(MESSAGES.PLAYER_NOT_FOUND(), sender);
                             return;
                         }
                         giveItem(sender, player, args[2]);
@@ -109,7 +110,7 @@ public class LobbyCommand extends BaseCommand {
                 }
         }
         if (hasPermission(sender, "ecolobby.command.help")) {
-            Chat.sendMessage(MESSAGES.HELP_MESSAGE, sender);
+            Chat.sendMessage(MESSAGES.HELP_MESSAGE(), sender);
         }
     }
 
@@ -117,15 +118,15 @@ public class LobbyCommand extends BaseCommand {
         Location spawn = SpawnManager.getSpawn(SpawnType.MAIN);
 
         if (spawn == null) {
-            Chat.sendPathMessage(MessagesPath.NULL_SPAWN.getPath(), player);
+            Chat.sendPathMessage(Path.NULL_SPAWN, player);
             return;
         }
         player.teleport(spawn);
-        Chat.sendPathMessage(MessagesPath.TELEPORTED_SPAWN.getPath(), player);
+        Chat.sendPathMessage(Path.TELEPORTED_SPAWN, player);
     }
 
     private void giveItem(CommandSender sender, Player player, String itemName) {
-        Chat.sendMessage(MESSAGES.SUCCESSFULLY_GIVE_ITEM, sender);
+        Chat.sendMessage(MESSAGES.SUCCESSFULLY_GIVE_ITEM(), sender);
         ItemManager.giveItem(player, itemName);
     }
 

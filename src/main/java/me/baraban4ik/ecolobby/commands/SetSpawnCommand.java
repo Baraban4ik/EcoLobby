@@ -22,18 +22,18 @@ public class SetSpawnCommand extends BaseCommand {
         if (hasPermission(player, "ecolobby.command.setspawn")) {
 
             if (args.length == 1) {
-                SpawnType type = SpawnType.valueOf(args[0]);
+                SpawnType type = SpawnType.valueOf(args[0].toUpperCase());
 
                 if (type != SpawnType.MAIN && type != SpawnType.FIRST) {
-                    Chat.sendMessage(MESSAGES.SETSPAWN_USAGE, player);
+                    Chat.sendMessage(MESSAGES.SETSPAWN_USAGE(), player);
                     return;
                 }
                 SpawnManager.setSpawn(player, type);
-                Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
+                Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN(), player);
                 return;
             }
             SpawnManager.setSpawn(player, SpawnType.MAIN);
-            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN, player);
+            Chat.sendMessage(MESSAGES.SUCCESSFULLY_SETSPAWN(), player);
         }
     }
     @Override
