@@ -1,7 +1,8 @@
 package me.baraban4ik.ecolobby.commands.base;
 
 import me.baraban4ik.ecolobby.MESSAGES;
-import me.baraban4ik.ecolobby.enums.MessagesPath;
+
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.utils.Chat;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,13 +15,13 @@ public abstract class BaseCommand extends BaseTabCompleter implements CommandExe
     public boolean hasPermission(@NotNull CommandSender sender, @NotNull String permission) {
         if (sender.hasPermission(permission)) return true;
 
-        Chat.sendPathMessage(MessagesPath.NO_PERMISSION.getPath(), sender);
+        Chat.sendPathMessage(Path.NO_PERMISSION, sender);
         return false;
     }
     public boolean isPlayer(@NotNull CommandSender sender) {
         if (sender instanceof Player) return true;
 
-        Chat.sendMessage(MESSAGES.ONLY_PLAYER, sender);
+        Chat.sendMessage(MESSAGES.ONLY_PLAYER(), sender);
         return false;
     }
     public abstract void execute(@NotNull CommandSender sender, @NotNull String[] args);

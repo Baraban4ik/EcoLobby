@@ -1,7 +1,8 @@
 package me.baraban4ik.ecolobby.commands;
 
 import me.baraban4ik.ecolobby.commands.base.BaseCommand;
-import me.baraban4ik.ecolobby.enums.MessagesPath;
+
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.enums.SpawnType;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.managers.SpawnManager;
@@ -23,11 +24,11 @@ public class SpawnCommand extends BaseCommand {
             Location spawn = SpawnManager.getSpawn(SpawnType.MAIN);
 
             if (spawn == null) {
-                Chat.sendPathMessage(MessagesPath.NULL_SPAWN.getPath(), player);
+                Chat.sendPathMessage(Path.NULL_SPAWN, player);
                 return;
             }
             player.teleport(spawn);
-            Chat.sendPathMessage(MessagesPath.TELEPORTED_SPAWN.getPath(), player);
+            Chat.sendPathMessage(Path.TELEPORTED_SPAWN, player);
         }
     }
     @Override

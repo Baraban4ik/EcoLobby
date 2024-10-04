@@ -1,7 +1,8 @@
 package me.baraban4ik.ecolobby.utils;
 
 import me.baraban4ik.ecolobby.EcoLobby;
-import me.baraban4ik.ecolobby.enums.MessagesPath;
+
+import me.baraban4ik.ecolobby.enums.Path;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -23,7 +24,7 @@ public class Format {
     }
 
     public static String replacePlaceholders(String text, CommandSender sender) {
-        String prefix = messages.getString(MessagesPath.PREFIX.getPath(), "");
+        String prefix = messages.getString(Path.PREFIX.getPath(), "");
         prefix = addHexSupport(prefix);
 
         text = text.replace("%prfx%", prefix)
@@ -33,9 +34,9 @@ public class Format {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            if (EcoLobby.PLACEHOLDER_API) {
+            if (EcoLobby.PLACEHOLDER_API)
                 text = PlaceholderAPI.setPlaceholders(player, text);
-            }
+
             text = text.replace("%player%", player.getName());
         }
         return text;
