@@ -3,28 +3,22 @@ package me.baraban4ik.ecolobby;
 import me.baraban4ik.ecolobby.commands.LobbyCommand;
 import me.baraban4ik.ecolobby.commands.SetSpawnCommand;
 import me.baraban4ik.ecolobby.commands.SpawnCommand;
-import me.baraban4ik.ecolobby.enums.ConfigPath;
-import me.baraban4ik.ecolobby.enums.TablistPath;
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.listeners.*;
+import me.baraban4ik.ecolobby.managers.BossBarManager;
 import me.baraban4ik.ecolobby.managers.TabManager;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.utils.Configurations;
 import me.baraban4ik.ecolobby.utils.Update;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static me.baraban4ik.ecolobby.utils.Chat.*;
@@ -40,6 +34,7 @@ public class EcoLobby extends JavaPlugin {
     public static FileConfiguration itemsConfig;
     public static FileConfiguration spawnConfig;
     public static FileConfiguration tablistConfig;
+    public static FileConfiguration bossBarConfig;
 
     public static boolean PLACEHOLDER_API = false;
     public static boolean NOTE_BLOCK_API = false;
@@ -47,7 +42,8 @@ public class EcoLobby extends JavaPlugin {
     public static boolean UPDATE_AVAILABLE = false;
     public static String UPDATE_VERSION = "";
 
-    TabManager tab = new TabManager();
+    TabManager tabManager = new TabManager();
+    BossBarManager barManager = new BossBarManager();
 
     @Override
     public void onLoad() {
@@ -58,6 +54,7 @@ public class EcoLobby extends JavaPlugin {
                 "language/messages_ru",
                 "spawn",
                 "tablist",
+                "bossbar",
                 "items"
         );
         configurations.load();
@@ -66,7 +63,7 @@ public class EcoLobby extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (config.getBoolean(ConfigPath.CHECK_UPDATES.getPath())) this.checkUpdate();
+        if (config.getBoolean(Path.CHECK_UPDATES.getPath())) this.checkUpdate();
 
         PLACEHOLDER_API = getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
         NOTE_BLOCK_API = getServer().getPluginManager().isPluginEnabled("NoteBlockAPI");
@@ -77,19 +74,16 @@ public class EcoLobby extends JavaPlugin {
         new Metrics(this, 14978);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        if (tablistConfig.getBoolean(TablistPath.ENABLED.getPath()))
-            this.sendTablist();
+        if (tablistConfig.getBoolean(Path.TABLIST.getPath()))
+            tabManager.sendTablist();
         updateWorld();
 
-        Chat.sendMessage(MESSAGES.ENABLE_MESSAGE, Bukkit.getConsoleSender());
+        Chat.sendMessage(MESSAGES.ENABLE_MESSAGE(), Bukkit.getConsoleSender());
     }
 
-    private void sendTablist() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                tab.update(player);
-            }
-        }, 0L, tablistConfig.getInt(TablistPath.REFRESH.getPath()) * 20L);
+    @Override
+    public void onDisable() {
+        barManager.removeAllPlayers();
     }
 
     public static EcoLobby getInstance() {
@@ -116,10 +110,10 @@ public class EcoLobby extends JavaPlugin {
 
     private void updateWorld() {
         for (World world : Bukkit.getWorlds()) {
-            ConfigurationSection rules = config.getConfigurationSection(ConfigPath.WORLD_RULES.getPath());
+            ConfigurationSection rules = config.getConfigurationSection(Path.WORLD_RULES.getPath());
 
             if (rules == null) return;
-            long time = config.getLong(ConfigPath.WORLD_TIME.getPath());
+            long time = config.getLong(Path.WORLD_TIME.getPath());
 
             for (String rule : rules.getKeys(false)) {
                 GameRule<?> gameRule = GameRule.getByName(rule);
@@ -150,22 +144,7 @@ public class EcoLobby extends JavaPlugin {
                 UPDATE_AVAILABLE = true;
                 UPDATE_VERSION = version;
 
-                List<Component> NEW_VERSION = Arrays.asList(
-                        Component.text(" __       ", TextColor.color(0xAEE495)),
-                        Component.text("|__", TextColor.color(0xAEE495))
-                                .append(Component.text(" |    ", TextColor.color(0xAEE495)))
-                                .append(Component.text("Plugin update available!", TextColor.color(0xf2ede0))),
-                        Component.text("|__", TextColor.color(0xAEE495))
-                                .append(Component.text(" |__  ", TextColor.color(0xAEE495)))
-                                .append(Component.text("Current version", TextColor.color(0xf2ede0)))
-                                .append(Component.text(" — ", NamedTextColor.GRAY))
-                                .append(Component.text(instance.getDescription().getVersion(), TextColor.color(0xAEE495)))
-                                .append(Component.text(" (", NamedTextColor.GRAY))
-                                .append(Component.text(EcoLobby.UPDATE_VERSION, TextColor.color(0xAEE495)))
-                                .append( Component.text(")", NamedTextColor.GRAY)),
-                        Component.space()
-                );
-                sendMessage(NEW_VERSION, Bukkit.getConsoleSender());
+                sendMessage(MESSAGES.NEW_VERSION(UPDATE_VERSION), Bukkit.getConsoleSender());
             }
         });
     }
@@ -174,9 +153,11 @@ public class EcoLobby extends JavaPlugin {
         configurations.reload();
         this.loadConfigurations();
 
-        if (tablistConfig.getBoolean(TablistPath.ENABLED.getPath())) {
-            Bukkit.getOnlinePlayers().forEach(player -> tab.update(player));
-        }
+        if (tablistConfig.getBoolean(Path.TABLIST.getPath()))
+            Bukkit.getOnlinePlayers().forEach(player -> tabManager.update(player));
+        if (bossBarConfig.getBoolean(Path.BOSSBAR.getPath()))
+            Bukkit.getOnlinePlayers().forEach(player -> barManager.update(player));
+
         updateWorld();
     }
 
@@ -192,7 +173,7 @@ public class EcoLobby extends JavaPlugin {
     private void loadLanguage() {
         messages = configurations.getConfig("language/messages");
 
-        if (config.getString(ConfigPath.LANGUAGE.getPath()).equalsIgnoreCase("ru"))
+        if (config.getString(Path.LANGUAGE.getPath()).equalsIgnoreCase("ru"))
             messages = configurations.getConfig("language/messages_ru");
     }
 
@@ -201,10 +182,11 @@ public class EcoLobby extends JavaPlugin {
         spawnConfig = configurations.getConfig("spawn");
         itemsConfig = configurations.getConfig("items");
         tablistConfig = configurations.getConfig("tablist");
+        bossBarConfig = configurations.getConfig("bossbar");
 
         this.loadLanguage();
 
-        if (!Objects.equals(config.get(ConfigPath.CONFIG_VERSION.getPath()), this.getDescription().getVersion())) {
+        if (!Objects.equals(config.get(Path.CONFIG_VERSION.getPath()), this.getDescription().getVersion())) {
 
             File file = new File(this.getDataFolder(), "config.yml");
             file.renameTo(new File(this.getDataFolder(), "config.yml-old"));

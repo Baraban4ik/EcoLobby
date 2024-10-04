@@ -1,7 +1,6 @@
 package me.baraban4ik.ecolobby.listeners;
 
-import me.baraban4ik.ecolobby.enums.ConfigPath;
-import me.baraban4ik.ecolobby.enums.MessagesPath;
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.utils.Chat;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -32,22 +31,23 @@ public class PlayerListener implements Listener {
     public void updatePlayer(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        double maxHealth = config.getDouble(ConfigPath.PLAYER_HEALTH.getPath(), 20);
-        List<String> effects = config.getStringList(ConfigPath.PLAYER_EFFECTS.getPath());
+        double maxHealth = config.getDouble(Path.PLAYER_HEALTH.getPath(), 20);
+        List<String> effects = config.getStringList(Path.PLAYER_EFFECTS.getPath());
 
-        GameMode gameMode = GameMode.valueOf(config.getString(ConfigPath.PLAYER_GAMEMODE.getPath(), "SURVIVAL").toUpperCase());
+        GameMode gameMode = GameMode.valueOf(config.getString(Path.PLAYER_GAMEMODE.getPath(), "SURVIVAL").toUpperCase());
 
         player.setGameMode(gameMode);
 
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
         player.setHealth(maxHealth);
 
-        player.setFoodLevel(config.getInt(ConfigPath.PLAYER_FOOD_LEVEL.getPath()));
-        player.setLevel(config.getInt(ConfigPath.PLAYER_LEVEL_EXP.getPath()));
+        player.setFoodLevel(config.getInt(Path.PLAYER_FOOD_LEVEL.getPath()));
+        player.setLevel(config.getInt(Path.PLAYER_LEVEL_EXP.getPath()));
 
-        for (PotionEffect activeEffect : player.getActivePotionEffects()) {
-            player.removePotionEffect(activeEffect.getType());
-        }
+        player.getActivePotionEffects().forEach(
+                activeEffect -> player.removePotionEffect(activeEffect.getType())
+        );
+
 
         for (String effect : effects) {
             String[] effectSplit = effect.split(":");
@@ -65,21 +65,19 @@ public class PlayerListener implements Listener {
             if (getInstance().getServerVersion() < 1.19) {
                 duration = (time == 0) ? Integer.MAX_VALUE : time;
             }
-
             player.addPotionEffect(new PotionEffect(type, duration, level-1, false, particles));
         }
-
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.setAllowFlight(config.getBoolean(ConfigPath.ABILITIES_FLY.getPath()));
-        }
+        Bukkit.getOnlinePlayers().forEach(
+                onlinePlayer -> onlinePlayer.setAllowFlight(config.getBoolean(Path.ABILITIES_FLY.getPath()))
+        );
     }
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.chat")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_CHAT.getPath())) {
-            Chat.sendPathMessage(MessagesPath.DENY_CHAT.getPath(), player);
+        if (config.getBoolean(Path.ABILITIES_CHAT.getPath())) {
+            Chat.sendPathMessage(Path.DENY_CHAT, player);
             event.setCancelled(true);
         }
     }
@@ -88,12 +86,12 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.commands")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_COMMANDS.getPath())) {
+        if (config.getBoolean(Path.ABILITIES_COMMANDS.getPath())) {
             String[] command = event.getMessage().replace("/", "").split(" ");
-            List<String> allowedCommands = config.getStringList(ConfigPath.ABILITIES_COMMANDS_ALLOWED.getPath());
+            List<String> allowedCommands = config.getStringList(Path.ABILITIES_COMMANDS_ALLOWED.getPath());
 
             if (!allowedCommands.contains(command[0])) {
-                Chat.sendPathMessage(MessagesPath.DENY_COMMANDS.getPath(), player);
+                Chat.sendPathMessage(Path.DENY_COMMANDS, player);
                 event.setCancelled(true);
             }
         }
@@ -104,10 +102,10 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.commands")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_COMMANDS.getPath())) {
-            List<String> allowedCommands = config.getStringList(ConfigPath.ABILITIES_COMMANDS_ALLOWED.getPath());
+        if (config.getBoolean(Path.ABILITIES_COMMANDS.getPath())) {
+            List<String> allowedCommands = config.getStringList(Path.ABILITIES_COMMANDS_ALLOWED.getPath());
 
-            if (!config.getBoolean(ConfigPath.ABILITIES_COMMANDS_TAB_COMPLETE.getPath())) {
+            if (!config.getBoolean(Path.ABILITIES_COMMANDS_TAB_COMPLETE.getPath())) {
                 event.getCommands().removeIf(command -> !allowedCommands.contains(command));
             }
         }
@@ -116,19 +114,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player)
-            event.setCancelled(config.getBoolean(ConfigPath.ABILITIES_DAMAGE.getPath()));
+            event.setCancelled(config.getBoolean(Path.ABILITIES_DAMAGE.getPath()));
     }
     @EventHandler
     public void onHunger(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player)
-            event.setCancelled(config.getBoolean(ConfigPath.ABILITIES_HUNGER.getPath()));
+            event.setCancelled(config.getBoolean(Path.ABILITIES_HUNGER.getPath()));
     }
     @EventHandler
     public void onMovements(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.movements")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_MOVEMENTS.getPath())) {
+        if (config.getBoolean(Path.ABILITIES_MOVEMENTS.getPath())) {
             Location from = event.getFrom().clone();
             Location to = event.getTo();
 
@@ -138,22 +136,33 @@ public class PlayerListener implements Listener {
             if (!from.equals(to)) event.setCancelled(true);
         }
     }
+
+
+    private void spawnParticleEffect(Player player, Location location) {
+        if (config.getBoolean(Path.ABILITIES_BLOCKS_PARTICLE_EFFECT.getPath())) player.playEffect(location, Effect.SMOKE, BlockFace.UP);
+    }
+    private void sendDenyMessage(Player player, Path messagePath) {
+        if (config.getBoolean(Path.ABILITIES_BLOCKS_DENY_MESSAGE.getPath()))
+            Chat.sendPathMessage(messagePath, player);
+    }
+    private void playDenySound(Player player, Path path, Path soundPath) {
+        if (config.getBoolean(path.getPath())) {
+            Sound sound = Sound.valueOf(config.getString(soundPath.getPath()));
+            player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+        }
+    }
+
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.blocks.break")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_BREAK.getPath())) {
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_PARTICLE_EFFECT.getPath()))
-                player.playEffect(event.getBlock().getLocation(), Effect.SMOKE, BlockFace.UP);
+        if (config.getBoolean(Path.ABILITIES_BLOCKS_BREAK.getPath())) {
+            spawnParticleEffect(player, event.getBlock().getLocation());
+            sendDenyMessage(player, Path.DENY_BREAK_BLOCKS);
 
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_MESSAGE.getPath()))
-                Chat.sendPathMessage(MessagesPath.DENY_BREAK_BLOCKS.getPath(), player);
-
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND.getPath())) {
-                Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_ITEMS_DENY_SOUND_SOUND.getPath()));
-                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-            }
+            playDenySound(player, Path.ABILITIES_BLOCKS_DENY_SOUND, Path.ABILITIES_ITEMS_DENY_SOUND_SOUND);
 
             event.setCancelled(true);
         }
@@ -165,17 +174,11 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.blocks.place")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_PLACE.getPath())) {
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_PARTICLE_EFFECT.getPath()))
-                player.playEffect(event.getBlock().getLocation(), Effect.SMOKE, BlockFace.UP);
+        if (config.getBoolean(Path.ABILITIES_BLOCKS_PLACE.getPath())) {
+            spawnParticleEffect(player, event.getBlock().getLocation());
+            sendDenyMessage(player, Path.DENY_PLACE_BLOCKS);
 
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_MESSAGE.getPath()))
-                Chat.sendPathMessage(MessagesPath.DENY_PLACE_BLOCKS.getPath(), player);
-
-            if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND.getPath())) {
-                Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND_SOUND.getPath()));
-                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-            }
+            playDenySound(player, Path.ABILITIES_BLOCKS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
 
             event.setCancelled(true);
         }
@@ -186,45 +189,34 @@ public class PlayerListener implements Listener {
     public void onBlocksInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.blocks.interact")) return;
+        if (!config.getBoolean(Path.ABILITIES_BLOCKS_INTERACT.getPath())) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_INTERACT.getPath())) {
-            Block block = event.getClickedBlock();
-            if (block == null) return;
+        Block block = event.getClickedBlock();
+        if (block == null) return;
 
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (!block.getType().isInteractable()) return;
+        boolean isRightClick = event.getAction() == Action.RIGHT_CLICK_BLOCK;
+        boolean isPhysical = event.getAction() == Action.PHYSICAL;
 
-                if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_PARTICLE_EFFECT.getPath())) {
-                    player.playEffect(event.getClickedBlock().getLocation(), Effect.SMOKE, BlockFace.UP);
+        if (isRightClick && block.getType().isInteractable() || (isPhysical && block.getType() == Material.FARMLAND)) {
+            spawnParticleEffect(player, event.getPlayer().getLocation());
+            sendDenyMessage(player, Path.DENY_INTERACT_BLOCKS);
 
-                    if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_MESSAGE.getPath())) {
-                        Chat.sendPathMessage(MessagesPath.DENY_INTERACT_BLOCKS.getPath(), player);
+            playDenySound(player, Path.ABILITIES_BLOCKS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
 
-                        if (config.getBoolean(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND.getPath())) {
-                            Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND_SOUND.getPath()));
-                            player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-                        }
-
-                        event.setCancelled(true);
-                    } else if (event.getAction() == Action.PHYSICAL) {
-                        if (block.getType().equals(Material.FARMLAND))
-                            event.setCancelled(true);
-                    }
-                }
-            }
+            event.setCancelled(true);
         }
     }
+
+
+
     @EventHandler
     public void onMoveItems(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
             if (player.hasPermission("ecolobby.bypass.items.move")) return;
 
-            if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_MOVE.getPath())) {
-                if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_DENY_SOUND.getPath())) {
-                    Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_BLOCKS_DENY_SOUND_SOUND.getPath()));
-                    player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-                }
+            if (config.getBoolean(Path.ABILITIES_ITEMS_MOVE.getPath())) {
+                playDenySound(player, Path.ABILITIES_ITEMS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
                 event.setCancelled(true);
             }
         }
@@ -235,11 +227,8 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission("ecolobby.bypass.items.drop")) return;
 
-        if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_DROP.getPath())) {
-            if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_DENY_SOUND.getPath())) {
-                Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_ITEMS_DENY_SOUND_SOUND.getPath()));
-                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-            }
+        if (config.getBoolean(Path.ABILITIES_ITEMS_DROP.getPath())) {
+            playDenySound(player, Path.ABILITIES_ITEMS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
             event.setCancelled(true);
         }
     }
@@ -250,11 +239,8 @@ public class PlayerListener implements Listener {
             Player player = (Player) event.getEntity();
             if (player.hasPermission("ecolobby.bypass.items.pickup")) return;
 
-            if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_PICKUP.getPath())) {
-                if (config.getBoolean(ConfigPath.ABILITIES_ITEMS_DENY_SOUND.getPath())) {
-                    Sound sound = Sound.valueOf(config.getString(ConfigPath.ABILITIES_ITEMS_DENY_SOUND_SOUND.getPath()));
-                    player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-                }
+            if (config.getBoolean(Path.ABILITIES_ITEMS_PICKUP.getPath())) {
+                playDenySound(player, Path.ABILITIES_ITEMS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
                 event.setCancelled(true);
             }
         }

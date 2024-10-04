@@ -5,7 +5,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.MESSAGES;
-import me.baraban4ik.ecolobby.enums.ItemsPath;
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.utils.Format;
 import org.bukkit.Bukkit;
@@ -31,16 +31,16 @@ public class ItemManager {
     private static ItemStack createItem(@NotNull Player player, @NotNull String itemName)  {
         ConfigurationSection itemSection = itemsConfig.getConfigurationSection( "Items." + itemName);
 
-        String material = itemSection.getString(ItemsPath.MATERIAL.getPath(), "STONE");
+        String material = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
         Material itemMaterial = Material.getMaterial(material.toUpperCase());
 
         boolean isHead = false;
         boolean isBaseHead = false;
 
-        int amount = itemSection.getInt(ItemsPath.AMOUNT.getPath());
+        int amount = itemSection.getInt(Path.ITEM_AMOUNT.getPath());
 
-        String displayName = Format.format(itemSection.getString(ItemsPath.NAME.getPath(), ""), player);
-        List<String> formatLore = itemSection.getStringList(ItemsPath.LORE.getPath()).stream()
+        String displayName = Format.format(itemSection.getString(Path.ITEM_NAME.getPath(), ""), player);
+        List<String> formatLore = itemSection.getStringList(Path.ITEM_LORE.getPath()).stream()
                 .map(line -> Format.format(line, player))
                 .collect(Collectors.toList());
 
@@ -106,7 +106,7 @@ public class ItemManager {
     }
 
     public static void setItems(Player player) {
-        ConfigurationSection items = itemsConfig.getConfigurationSection(ItemsPath.ITEMS.getPath());
+        ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
         if (items == null) return;
 
         for (String itemName : items.getKeys(false)) {
@@ -116,11 +116,11 @@ public class ItemManager {
         }
     }
     public static void giveItem(Player player, String itemName) {
-        ConfigurationSection items = itemsConfig.getConfigurationSection(ItemsPath.ITEMS.getPath());
+        ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
         ItemStack item = createItem(player, itemName);
 
         if (item == null || items == null) {
-            Chat.sendMessage(MESSAGES.ITEM_NOT_FOUND, player);
+            Chat.sendMessage(MESSAGES.ITEM_NOT_FOUND(), player);
             return;
         }
         player.getInventory().addItem(item);

@@ -1,6 +1,6 @@
 package me.baraban4ik.ecolobby.listeners;
 
-import me.baraban4ik.ecolobby.enums.ItemsPath;
+import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.managers.ActionManager;
 import me.baraban4ik.ecolobby.managers.ItemManager;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +18,7 @@ public class ItemsListener implements Listener {
     public void onClick(PlayerInteractEvent event) {
         if (event.getItem() == null) return;
 
-        ConfigurationSection items = itemsConfig.getConfigurationSection(ItemsPath.ITEMS.getPath());
+        ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
         if (items == null) return;
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
