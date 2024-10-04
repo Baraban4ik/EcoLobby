@@ -80,7 +80,7 @@ Join:
     - "[MSG]  #f2ede0You've joined the Main Lobby"
     - "[MSG]"
     - "[MSG]  #f2ede0Server site: #aee495ᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
-    - "[MSG][WAIT:10]"
+    - "[MSG]"
   # Play music when joining a server
   # NoteBlockAPI required
   music:
@@ -89,9 +89,8 @@ Join:
     # And select this file here, example: track: - "music.nbs".
     tracks:
       - "music.nbs"
-    # NO - Don't repeat
-    # YES - Repeat
-    repeat: NO
+    repeat: false
+    random: false
   # Clearing chat when joining a server
   clear_chat: false
 
