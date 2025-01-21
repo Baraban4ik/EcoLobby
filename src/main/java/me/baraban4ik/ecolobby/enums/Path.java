@@ -76,6 +76,11 @@ public enum Path {
     VOID_HEIGHT("World.jump_into_the_void.height"),
     VOID_ACTIONS("World.jump_into_the_void.actions"),
 
+    FALL_PARTICLES("World.fall_particles.enabled"),
+    FALL_PARTICLES_RADIUS("World.fall_particles.radius"),
+    FALL_PARTICLES_AMOUNT("World.fall_particles.amount"),
+    FALL_PARTICLES_PARTICLE("World.fall_particles.particle"),
+
     // Hiders:
     HIDE_STREAM("Hiders.hide_stream"),
     HIDE_PLAYERS("Hiders.hide_players"),
@@ -86,6 +91,8 @@ public enum Path {
     ITEM_LORE("lore"),
     ITEM_MATERIAL("material"),
     ITEM_AMOUNT("amount"),
+    ITEM_ENCHANTS("enchantments"),
+    ITEM_FLAGS("flags"),
 
     // BossBar:
     BOSSBAR("enabled"),
