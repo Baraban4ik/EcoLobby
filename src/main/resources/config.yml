@@ -166,6 +166,16 @@ World:
     actions:
       - "[TELEPORT_TO_SPAWN]" # Execute actions when jumping into the void
 
+  fall_particles:
+    enabled: true
+
+    # Particles spawning radius
+    radius: 20
+    # Particles amount
+    amount: 6
+    # Particles. Take there - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html
+    particle: FIREWORKS_SPARK
+
 Hiders:
   hide_stream: true # Hide messages about join, leave, death, etc.
   hide_players: true # Hide players from each other
