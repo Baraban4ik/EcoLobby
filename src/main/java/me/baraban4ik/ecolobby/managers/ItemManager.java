@@ -12,8 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -28,44 +30,47 @@ import java.util.stream.Collectors;
 import static me.baraban4ik.ecolobby.EcoLobby.*;
 
 public class ItemManager {
+
+    private static ConfigurationSection itemSection;
+    private static String materialSection;
+    private static boolean isHead = false;
+    private static boolean isBaseHead = false;
+
     private static ItemStack createItem(@NotNull Player player, @NotNull String itemName)  {
-        ConfigurationSection itemSection = itemsConfig.getConfigurationSection( "Items." + itemName);
+        itemSection = itemsConfig.getConfigurationSection( "Items." + itemName);
 
-        String material = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
-        Material itemMaterial = Material.getMaterial(material.toUpperCase());
-
-        boolean isHead = false;
-        boolean isBaseHead = false;
+        if (itemSection == null)
+            return new ItemStack(Material.STONE);
 
         int amount = itemSection.getInt(Path.ITEM_AMOUNT.getPath());
+        materialSection = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
 
         String displayName = Format.format(itemSection.getString(Path.ITEM_NAME.getPath(), ""), player);
         List<String> formatLore = itemSection.getStringList(Path.ITEM_LORE.getPath()).stream()
                 .map(line -> Format.format(line, player))
                 .collect(Collectors.toList());
 
-        if (material.startsWith("head-")) {
-            itemMaterial = Material.PLAYER_HEAD;
-            isHead = true;
-        }
-        else if (material.startsWith("basehead-")) {
-            itemMaterial = Material.PLAYER_HEAD;
-            isBaseHead = true;
-        }
+        List<String> enchantments = itemSection.getStringList(Path.ITEM_ENCHANTS.getPath());
+        List<String> flags = itemSection.getStringList(Path.ITEM_FLAGS.getPath());
 
-        if (itemMaterial != null) {
-            ItemStack item = new ItemStack(itemMaterial, amount);
+        isHead = false;
+        isBaseHead = false;
+
+        Material material = getMaterial();
+
+        if (material != null) {
+            ItemStack item = new ItemStack(material, amount);
             ItemMeta itemMeta = item.getItemMeta();
 
             if (isHead) {
-                String owner = material.replace("head-", "");
+                String owner = materialSection.replace("head-", "");
                 owner = Format.format(owner, player);
 
                 SkullMeta skullMeta = (SkullMeta) itemMeta;
                 skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
             }
             if (isBaseHead) {
-                String base64 = material.replace("basehead-", "");
+                String base64 = materialSection.replace("basehead-", "");
                 SkullMeta skullMeta = (SkullMeta) itemMeta;
 
                 GameProfile profile = new GameProfile(UUID.randomUUID(), "");
@@ -79,8 +84,25 @@ public class ItemManager {
                     e.printStackTrace();
                 }
             }
+
+            enchantments.forEach(e -> {
+                String[] enchantSplit = e.split(":");
+
+                Enchantment enchantment = Enchantment.getByName(enchantSplit[0].toUpperCase());
+                int level = Integer.parseInt(enchantSplit[1]);
+
+                if (enchantment != null) {
+                    itemMeta.addEnchant(enchantment, level, true);
+                }
+            });
+
+            flags.forEach(flag -> {
+                ItemFlag itemFlag = ItemFlag.valueOf(flag.toUpperCase());
+                itemMeta.addItemFlags(itemFlag);
+            });
+
             itemMeta.setDisplayName(displayName);
-            if (!formatLore.isEmpty() && formatLore != null) {
+            if (!formatLore.isEmpty()) {
                 itemMeta.setLore(formatLore);
             }
 
@@ -92,6 +114,20 @@ public class ItemManager {
             return item;
         }
         return null;
+    }
+
+    private static Material getMaterial() {
+        Material material = Material.getMaterial(materialSection.toUpperCase());
+
+        if (materialSection.startsWith("head-")) {
+            material = Material.PLAYER_HEAD;
+            isHead = true;
+        }
+        else if (materialSection.startsWith("basehead-")) {
+            material = Material.PLAYER_HEAD;
+            isBaseHead = true;
+        }
+        return material;
     }
 
     public static boolean isEcoItem(ItemStack item, String itemName) {
