@@ -26,11 +26,11 @@ public class TabManager {
     }
 
     public void sendTablist() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(EcoLobby.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskTimer(EcoLobby.getInstance(), () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 update(player);
             }
-        }, 0L, tablistConfig.getInt(Path.TABLIST_REFRESH.getPath()) * 20L);
+        }, 0L, tablistConfig.getLong(Path.TABLIST_REFRESH.getPath()) * 20L);
     }
 
     private String convert(List<String> list, Player player) {
