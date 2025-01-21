@@ -9,14 +9,9 @@ import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.MESSAGES;
 import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.enums.SpawnType;
-import me.baraban4ik.ecolobby.managers.ActionManager;
-import me.baraban4ik.ecolobby.managers.BossBarManager;
-import me.baraban4ik.ecolobby.managers.ItemManager;
+import me.baraban4ik.ecolobby.managers.*;
+import me.baraban4ik.ecolobby.tasks.ParticleFallTask;
 import me.baraban4ik.ecolobby.utils.Chat;
-import me.baraban4ik.ecolobby.managers.SpawnManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static me.baraban4ik.ecolobby.EcoLobby.*;
@@ -55,6 +49,8 @@ public class JoinListener implements Listener {
 
         if (config.getBoolean(Path.CHECK_UPDATES.getPath()) && EcoLobby.UPDATE_AVAILABLE)
             sendUpdateAvailable(player);
+
+        ParticleFallTask.add(player);
     }
 
 
@@ -65,10 +61,14 @@ public class JoinListener implements Listener {
     }
 
     private void teleportToSpawn(Player player) {
-        Location spawn;
+        Location spawn = SpawnManager.getSpawn(SpawnType.MAIN);
 
-        if (player.hasPlayedBefore()) spawn = SpawnManager.getSpawn(SpawnType.MAIN);
-        else spawn = SpawnManager.getSpawn(SpawnType.FIRST);
+        if (!player.hasPlayedBefore()) {
+            spawn = SpawnManager.getSpawn(SpawnType.FIRST);
+
+            if (spawn == null)
+                spawn = SpawnManager.getSpawn(SpawnType.MAIN);
+        }
 
         if (spawn != null) player.teleport(spawn);
     }
