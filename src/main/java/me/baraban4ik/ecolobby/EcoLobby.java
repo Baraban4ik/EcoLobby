@@ -7,6 +7,7 @@ import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.listeners.*;
 import me.baraban4ik.ecolobby.managers.BossBarManager;
 import me.baraban4ik.ecolobby.managers.TabManager;
+import me.baraban4ik.ecolobby.tasks.ParticleFallTask;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.utils.Configurations;
 import me.baraban4ik.ecolobby.utils.Update;
@@ -45,6 +46,7 @@ public class EcoLobby extends JavaPlugin {
     TabManager tabManager = new TabManager();
     BossBarManager barManager = new BossBarManager();
 
+
     @Override
     public void onLoad() {
         instance = this;
@@ -74,10 +76,13 @@ public class EcoLobby extends JavaPlugin {
         new Metrics(this, 14978);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        if (tablistConfig.getBoolean(Path.TABLIST.getPath()))
-            tabManager.sendTablist();
-        updateWorld();
+        if (tablistConfig.getBoolean(Path.TABLIST.getPath())) tabManager.sendTablist();
 
+        if (config.getBoolean(Path.FALL_PARTICLES.getPath())) {
+            Bukkit.getOnlinePlayers().forEach(ParticleFallTask::add);
+            (new ParticleFallTask()).runTaskTimer(this, 0L, 1L);
+        }
+        updateWorld();
         Chat.sendMessage(MESSAGES.ENABLE_MESSAGE(), Bukkit.getConsoleSender());
     }
 
