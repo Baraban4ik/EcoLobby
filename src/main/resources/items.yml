@@ -63,4 +63,13 @@ Items:
     material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTc1YWNjZGExNDBjNmIwZTJlZjE3M2FiOTc1OTU5YTY2ZTljYzI0YzEzMTRmNjAxODU3YjM1NTE5MDExMGExNiJ9fX0=
     slot: 4
     amount: 1
+    # Enchantments for an item
+    # USAGE: 'ENCHANT:LEVEL'
+    # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+    enchantments:
+      - "DIG_SPEED:1"
+    # Flags for an item
+    # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html
+    flags:
+      - HIDE_ENCHANTS
     actions: []
