@@ -7,6 +7,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -14,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
@@ -168,14 +170,21 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityPlace(EntityPlaceEvent event) {
+        if (event.getPlayer() != null) cancelPlace(event.getPlayer(), event.getBlock().getLocation(), event);
+    }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
+        cancelPlace(event.getPlayer(), event.getBlock().getLocation(), event);
+    }
+
+    private void cancelPlace(Player player, Location blockLocation, Cancellable event) {
         if (player.hasPermission("ecolobby.bypass.blocks.place")) return;
 
         if (config.getBoolean(Path.ABILITIES_BLOCKS_PLACE.getPath())) {
-            spawnParticleEffect(player, event.getBlock().getLocation());
+            spawnParticleEffect(player, blockLocation);
             sendDenyMessage(player, Path.DENY_PLACE_BLOCKS);
 
             playDenySound(player, Path.ABILITIES_BLOCKS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
