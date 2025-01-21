@@ -25,12 +25,14 @@ public class BossBarManager {
             BarColor color = BarColor.valueOf(bossBarConfig.getString(Path.BOSSBAR_COLOR.getPath(), "GREEN"));
             BarStyle style = BarStyle.valueOf(bossBarConfig.getString(Path.BOSSBAR_STYLE.getPath(), "SOLID"));
 
+            long refresh = bossBarConfig.getLong(Path.BOSSBAR_REFRESH.getPath(), 1);
+
             BossBar bossBar = Bukkit.createBossBar(title, color, style);
             bossBar.addPlayer(player);
 
             playerBossBars.put(player, bossBar);
 
-            Bukkit.getScheduler().runTaskTimerAsynchronously(EcoLobby.getInstance(), () -> update(player), 0L, bossBarConfig.getInt(Path.BOSSBAR_REFRESH.getPath()) * 20L);
+            Bukkit.getScheduler().runTaskTimer(EcoLobby.getInstance(), () -> update(player), 0L, refresh * 20L);
         }
         else {
             BossBar bossBar = playerBossBars.get(player);
