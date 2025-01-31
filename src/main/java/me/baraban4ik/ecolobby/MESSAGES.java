@@ -158,6 +158,21 @@ public class MESSAGES {
             .append(Component.text("(игрок) <предмет>", TextColor.color(0xf2ede0)))
             .build();
 
+    private static final Component OPEN_USAGE = Component.text()
+            .append(USAGE)
+            .append(Component.space())
+            .append(Component.text("/el open", TextColor.color(0xf2ede0)))
+            .append(Component.space())
+            .append(Component.text("<menu> (player)", TextColor.color(0xf2ede0)))
+            .build();
+    private static final Component OPEN_USAGE_RU = Component.text()
+            .append(USAGE)
+            .append(Component.space())
+            .append(Component.text("/el open", TextColor.color(0xf2ede0)))
+            .append(Component.space())
+            .append(Component.text("<меню> (игрок)", TextColor.color(0xf2ede0)))
+            .build();
+
     private static final Component SETSPAWN_USAGE = Component.text()
             .append(USAGE)
             .append(Component.space())
@@ -193,6 +208,15 @@ public class MESSAGES {
     private static final Component SUCCESSFULLY_GIVE_ITEM_RU = Component.text()
             .append(PREFIX)
             .append(Component.text("Вы успешно получили предмет!", TextColor.color(0xf2ede0)))
+            .build();
+
+    private static final Component SUCCESSFULLY_OPEN_MENU = Component.text()
+            .append(PREFIX)
+            .append(Component.text("You have successfully opened the menu!", TextColor.color(0xf2ede0)))
+            .build();
+    private static final Component SUCCESSFULLY_OPEN_MENU_RU = Component.text()
+            .append(PREFIX)
+            .append(Component.text("Вы успешно открыли меню!", TextColor.color(0xf2ede0)))
             .build();
 
     private static final Component PLAYER_NOT_FOUND = Component.text()
@@ -246,6 +270,9 @@ public class MESSAGES {
     public static Component SETSPAWN_USAGE() {
         return SETSPAWN_USAGE;
     }
+    public static Component OPEN_USAGE() {
+        return getLanguage().equals("ru") ? OPEN_USAGE_RU : OPEN_USAGE;
+    }
 
     public static Component PLUGIN_RELOADED() {
         return getLanguage().equals("ru") ? PLUGIN_RELOADED_RU : PLUGIN_RELOADED;
@@ -258,7 +285,9 @@ public class MESSAGES {
     public static Component SUCCESSFULLY_GIVE_ITEM() {
         return getLanguage().equals("ru") ? SUCCESSFULLY_GIVE_ITEM_RU : SUCCESSFULLY_GIVE_ITEM;
     }
-
+    public static Component SUCCESSFULLY_OPEN_MENU() {
+        return getLanguage().equals("ru") ? SUCCESSFULLY_OPEN_MENU_RU : SUCCESSFULLY_OPEN_MENU;
+    }
     public static Component PLAYER_NOT_FOUND() {
         return getLanguage().equals("ru") ? PLAYER_NOT_FOUND_RU : PLAYER_NOT_FOUND;
     }
