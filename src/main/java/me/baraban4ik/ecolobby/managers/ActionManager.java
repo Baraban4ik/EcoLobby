@@ -32,6 +32,8 @@ public class ActionManager {
         actionMap.put(ActionType.ACTIONBAR, new ActionBarAction());
         actionMap.put(ActionType.HIDE_PLAYERS, new HidePlayersAction());
         actionMap.put(ActionType.SHOW_PLAYERS, new ShowPlayersAction());
+        actionMap.put(ActionType.CLOSE_GUI, new CloseGUIAction());
+        actionMap.put(ActionType.OPEN_GUI, new OpenGUIAction());
     }
 
     private static final Pattern WAIT_PATTERN = Pattern.compile("\\[WAIT:(\\d+)]");
