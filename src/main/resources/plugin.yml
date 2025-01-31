@@ -29,6 +29,8 @@ permissions:
     default: true
   ecolobby.command.give:
     default: op
+  ecolobby.command.open:
+    default: op
   ecolobby.command.setspawn:
     default: op
   ecolobby.command.spawn:
