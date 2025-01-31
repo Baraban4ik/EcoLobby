@@ -23,9 +23,11 @@ public class ItemsListener implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-            for (String itemName : items.getKeys(false)) {
-                if (ItemManager.isEcoItem(event.getItem(), itemName)) {
-                    List<String> actions = items.getStringList(itemName + ".actions");
+            for (String itemID : items.getKeys(false)) {
+                if (ItemManager.isEcoItem(event.getItem())) {
+                    ConfigurationSection itemIDSection = items.getConfigurationSection(itemID);
+
+                    List<String> actions = itemIDSection.getStringList(Path.ITEM_ACTIONS.getPath());
                     ActionManager.execute(event.getPlayer(), actions);
                 }
             }
