@@ -37,6 +37,10 @@ public class JoinListener implements Listener {
             BossBarManager barManager = new BossBarManager();
             barManager.sendBossBar(player);
         }
+        if (scoreboardConfig.getBoolean(Path.SCOREBOARD.getPath())) {
+            ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
+            scoreBoardManager.send(player);
+        }
 
         if (config.getBoolean(Path.CLEAR_CHAT.getPath())) {
             for (int i = 0; i < 100; i++) {
