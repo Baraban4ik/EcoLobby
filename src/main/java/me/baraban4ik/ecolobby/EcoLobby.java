@@ -4,8 +4,12 @@ import me.baraban4ik.ecolobby.commands.LobbyCommand;
 import me.baraban4ik.ecolobby.commands.SetSpawnCommand;
 import me.baraban4ik.ecolobby.commands.SpawnCommand;
 import me.baraban4ik.ecolobby.enums.Path;
+import me.baraban4ik.ecolobby.gui.GUI;
+import me.baraban4ik.ecolobby.gui.GUIData;
+import me.baraban4ik.ecolobby.gui.GUIListener;
 import me.baraban4ik.ecolobby.listeners.*;
 import me.baraban4ik.ecolobby.managers.BossBarManager;
+import me.baraban4ik.ecolobby.managers.ScoreBoardManager;
 import me.baraban4ik.ecolobby.managers.TabManager;
 import me.baraban4ik.ecolobby.tasks.ParticleFallTask;
 import me.baraban4ik.ecolobby.utils.Chat;
@@ -17,6 +21,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -36,6 +41,7 @@ public class EcoLobby extends JavaPlugin {
     public static FileConfiguration spawnConfig;
     public static FileConfiguration tablistConfig;
     public static FileConfiguration bossBarConfig;
+    public static FileConfiguration scoreboardConfig;
 
     public static boolean PLACEHOLDER_API = false;
     public static boolean NOTE_BLOCK_API = false;
@@ -45,6 +51,7 @@ public class EcoLobby extends JavaPlugin {
 
     TabManager tabManager = new TabManager();
     BossBarManager barManager = new BossBarManager();
+    ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
 
 
     @Override
@@ -57,10 +64,12 @@ public class EcoLobby extends JavaPlugin {
                 "spawn",
                 "tablist",
                 "bossbar",
+                "scoreboard",
                 "items"
         );
         configurations.load();
         this.loadConfigurations();
+        configurations.loadGUIs();
     }
 
     @Override
@@ -84,11 +93,14 @@ public class EcoLobby extends JavaPlugin {
         }
         updateWorld();
         Chat.sendMessage(MESSAGES.ENABLE_MESSAGE(), Bukkit.getConsoleSender());
+
+        System.out.println(configurations.getGUIs());
     }
 
     @Override
     public void onDisable() {
         barManager.removeAllPlayers();
+        scoreBoardManager.removeAllPlayers();
     }
 
     public static EcoLobby getInstance() {
@@ -111,6 +123,7 @@ public class EcoLobby extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PreJoinListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
 
     private void updateWorld() {
@@ -157,12 +170,17 @@ public class EcoLobby extends JavaPlugin {
     public void reload() {
         configurations.reload();
         this.loadConfigurations();
+        configurations.reloadGUIs();
 
-        if (tablistConfig.getBoolean(Path.TABLIST.getPath()))
-            Bukkit.getOnlinePlayers().forEach(player -> tabManager.update(player));
-        if (bossBarConfig.getBoolean(Path.BOSSBAR.getPath()))
-            Bukkit.getOnlinePlayers().forEach(player -> barManager.update(player));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (tablistConfig.getBoolean(Path.TABLIST.getPath())) tabManager.update(player);
+            if (bossBarConfig.getBoolean(Path.BOSSBAR.getPath())) barManager.update(player);
+            if (scoreboardConfig.getBoolean(Path.SCOREBOARD.getPath())) scoreBoardManager.update(player);
 
+            GUI gui = GUIData.getGUI(player.getOpenInventory().getTopInventory());
+            if (gui != null) gui.update(player);
+
+        }
         updateWorld();
     }
 
@@ -188,6 +206,7 @@ public class EcoLobby extends JavaPlugin {
         itemsConfig = configurations.getConfig("items");
         tablistConfig = configurations.getConfig("tablist");
         bossBarConfig = configurations.getConfig("bossbar");
+        scoreboardConfig = configurations.getConfig("scoreboard");
 
         this.loadLanguage();
 
