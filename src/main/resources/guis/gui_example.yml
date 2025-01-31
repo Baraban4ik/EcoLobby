@@ -1,0 +1,98 @@
+#    ╔═════════════════════════════════════════════════════════════╗
+#    ║                     PLUGIN PLACEHOLDERS                     ║
+#    ║                                                             ║
+#    ║  * %prfx%   - Prefix in the messages.yml file               ║
+#    ║  * %player% - Player nickname                               ║
+#    ║  * %online% - Server online                                 ║
+#    ║  * %NL%     - New line                                      ║
+#    ║                                                             ║
+#    ║  You can also use placeholders from PlaceholderAPI          ║
+#    ║  and hex colors (1.16.5 and higher)                         ║
+#    ║  * Format: #color                                           ║
+#    ║  * Example: #ffaa00                                         ║
+#    ║                                                             ║
+#    ╚═════════════════════════════════════════════════════════════╝
+#  ╔═════════════════════════════════════════════════════════════════╗
+#  ║                        AVAILABLE ACTIONS                        ║
+#  ║                                                                 ║
+#  ║  For anything with an "actions" parameter:                      ║
+#  ║                                                                 ║
+#  ║  * "[MSG] msg"                  - Send a message to a player    ║
+#  ║  * "[MM] msg"                   - Send a message as MiniMessage ║
+#  ║  * "[BROADCAST] msg"            - Send broadcast message        ║
+#  ║                                                                 ║
+#  ║  * "[TITLE] msg;sub_msg"        - Send title to a player        ║
+#  ║  * "[ACTIONBAR] msg"            - Send action-bar message       ║
+#  ║                                                                 ║
+#  ║  * "[PLAYER] command"           - Execute command as player     ║
+#  ║  * "[CONSOLE] command"          - Execute command as console    ║
+#  ║                                                                 ║
+#  ║  * "[CONNECT] server"           - Switch to BungeeCord/Velocity ║
+#  ║  * "[TELEPORT_TO_SPAWN]"        - Teleport player to spawn      ║
+#  ║                                                                 ║
+#  ║  * "[HIDE_PLAYERS]"             - Hides players for you         ║
+#  ║  * "[SHOW_PLAYERS]"             - Shows players for you         ║
+#  ║                                                                 ║
+#  ║  * "[CLOSE_GUI]" - Closes the player's current menus            ║
+#  ║  * "[OPEN_GUI] menu_name" - Opens the menu_name menu            ║
+#  ║                                                                 ║
+#  ║  * "[SOUND] sound;volume;pitch" - Play a sound for player       ║
+#  ║                                                                 ║
+#  ║                                                                 ║
+#  ║  For an action to be performed with a delay,                    ║
+#  ║  you need to add [WAIT:N] to it.                                ║
+#  ║   * EXAMPLE: "[MSG][WAIT:10] msg"                               ║
+#  ║                                                                 ║
+#  ╚═════════════════════════════════════════════════════════════════╝
+title: "Example GUI"
+size: 45
+
+Items:
+  decor:
+    material: LIME_STAINED_GLASS_PANE
+    name: " "
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 36
+      - 37
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
+  survival:
+    name: " "
+    lore:
+      - " #aee495survival &7• #DDCEC0online: &f10 &7/ &f50 &7⛄ "
+      - ""
+      - " #DDCEC0► connect in server"
+      - ""
+    material: GRASS_BLOCK
+    slot: 20
+    refresh: true
+    actions:
+      - "[CLOSE_GUI]"
+      - "[CONNECT] survival"
+  mini_games:
+    name: " "
+    lore:
+      - " #aee495mini games &7• #DDCEC0online: &f10 &7/ &f50 &7⛄ "
+      - ""
+      - " #DDCEC0► connect in server"
+      - ""
+    material: LIME_GLAZED_TERRACOTTA
+    slot: 24
+    refresh: true
+    actions:
+      - "[CLOSE_GUI]"
+      - "[CONNECT] mini_games"
