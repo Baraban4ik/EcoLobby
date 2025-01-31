@@ -7,6 +7,7 @@ import me.baraban4ik.ecolobby.commands.base.BaseCommand;
 
 import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.enums.SpawnType;
+import me.baraban4ik.ecolobby.gui.GUI;
 import me.baraban4ik.ecolobby.managers.ItemManager;
 import me.baraban4ik.ecolobby.utils.Chat;
 import me.baraban4ik.ecolobby.managers.SpawnManager;
@@ -55,7 +56,7 @@ public class LobbyCommand extends BaseCommand {
                         }
                         return;
                     }
-                    case "give":
+                    case "give": {
                         if (!isPlayer(sender)) return;
                         Player player = (Player) sender;
 
@@ -63,7 +64,12 @@ public class LobbyCommand extends BaseCommand {
                             Chat.sendMessage(MESSAGES.GIVE_USAGE(), player);
                         }
                         return;
-
+                    }
+                    case "open":
+                        if (hasPermission(sender, "ecolobby.command.open")) {
+                            Chat.sendMessage(MESSAGES.OPEN_USAGE(), sender);
+                        }
+                        return;
                 }
                 break;
             case 2:
@@ -93,6 +99,17 @@ public class LobbyCommand extends BaseCommand {
                         }
                         return;
                     }
+                    case "open": {
+                        if (!isPlayer(sender)) return;
+                        Player player = (Player) sender;
+
+                        if (hasPermission(player, "ecolobby.command.open")) {
+                            String guiName = args[1];
+                            new GUI(guiName).open(player);
+                            Chat.sendMessage(MESSAGES.SUCCESSFULLY_OPEN_MENU(), player);
+                        }
+                        return;
+                    }
                 }
                 break;
             case 3:
@@ -108,6 +125,22 @@ public class LobbyCommand extends BaseCommand {
                     }
                     return;
                 }
+                if (args[0].equalsIgnoreCase("open")) {
+                    if (hasPermission(sender, "ecolobby.command.open")) {
+                        String guiName = args[1];
+                        String playerName = args[2];
+
+                        Player target = Bukkit.getPlayer(playerName);
+                        if (target == null) {
+                            Chat.sendMessage(MESSAGES.PLAYER_NOT_FOUND(), sender);
+                            return;
+                        }
+                        new GUI(guiName).open(target);
+                        Chat.sendMessage(MESSAGES.SUCCESSFULLY_OPEN_MENU(), sender);
+                    }
+                    return;
+                }
+                return;
         }
         if (hasPermission(sender, "ecolobby.command.help")) {
             Chat.sendMessage(MESSAGES.HELP_MESSAGE(), sender);
@@ -137,7 +170,7 @@ public class LobbyCommand extends BaseCommand {
 
         switch (args.length) {
             case 1:
-                String[] permissions = {"ecolobby.command.reload", "ecolobby.command.setspawn", "ecolobby.command.spawn", "ecolobby.command.help", "ecolobby.command.give"};
+                String[] permissions = {"ecolobby.command.reload", "ecolobby.command.setspawn", "ecolobby.command.spawn", "ecolobby.command.help", "ecolobby.command.give", "ecolobby.command.open"};
 
                 for (String permission : permissions) {
                     if (sender.hasPermission(permission)) {
@@ -148,18 +181,23 @@ public class LobbyCommand extends BaseCommand {
             case 2:
                 if (args[0].equalsIgnoreCase("give") && itemsSection != null) {
                     argsComplete.addAll(itemsSection.getKeys(false));
+                    Bukkit.getOnlinePlayers().forEach(p -> argsComplete.add(p.getName()));
 
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        argsComplete.add(player.getName());
-                    }
                     return argsComplete;
                 }
 
                 if (args[0].equalsIgnoreCase("setspawn"))
                     return Lists.newArrayList("first", "main");
+                if (args[0].equalsIgnoreCase("open"))
+                    return EcoLobby.getConfigurations().getGUIs();
+
             case 3:
                 if (args[0].equalsIgnoreCase("give") && itemsSection != null)
                     return Lists.newArrayList(itemsSection.getKeys(false));
+                if (args[0].equalsIgnoreCase("open")) {
+                    Bukkit.getOnlinePlayers().forEach(p -> argsComplete.add(p.getName()));
+                    return argsComplete;
+                }
         }
 
         return new ArrayList<>();
