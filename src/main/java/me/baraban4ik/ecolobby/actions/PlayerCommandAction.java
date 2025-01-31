@@ -2,6 +2,7 @@ package me.baraban4ik.ecolobby.actions;
 
 import me.baraban4ik.ecolobby.enums.Path;
 import me.baraban4ik.ecolobby.models.PlayerAction;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -15,10 +16,10 @@ public class PlayerCommandAction implements PlayerAction {
             List<String> allowedCommands = config.getStringList(Path.ABILITIES_COMMANDS_ALLOWED.getPath());
 
             if (allowedCommands.contains(action) && !(player.hasPermission("ecolobby.bypass.commands"))) {
-                player.performCommand(action);
+                Bukkit.dispatchCommand(player, action);
             }
-			return;
+            return;
         }
-		player.performCommand(action);
+        Bukkit.dispatchCommand(player, action);
     }
 }
