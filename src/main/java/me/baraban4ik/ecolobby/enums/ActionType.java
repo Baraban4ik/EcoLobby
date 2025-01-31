@@ -12,7 +12,9 @@ public enum ActionType {
     ACTIONBAR("[ACTIONBAR]"),
     SOUND("[SOUND]"),
     HIDE_PLAYERS("[HIDE_PLAYERS]"),
-    SHOW_PLAYERS("[SHOW_PLAYERS]");
+    SHOW_PLAYERS("[SHOW_PLAYERS]"),
+    CLOSE_GUI("[CLOSE_GUI]"),
+    OPEN_GUI("[OPEN_GUI]");
 
     private final String tag;
 
