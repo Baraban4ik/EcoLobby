@@ -31,18 +31,15 @@ import static me.baraban4ik.ecolobby.EcoLobby.*;
 
 public class ItemManager {
 
-    private static ConfigurationSection itemSection;
     private static String materialSection;
     private static boolean isHead = false;
     private static boolean isBaseHead = false;
 
-    private static ItemStack createItem(@NotNull Player player, @NotNull String itemName)  {
-        itemSection = itemsConfig.getConfigurationSection( "Items." + itemName);
-
+    public static ItemStack createItem(@NotNull Player player, @NotNull String itemID, ConfigurationSection itemSection)  {
         if (itemSection == null)
             return new ItemStack(Material.STONE);
 
-        int amount = itemSection.getInt(Path.ITEM_AMOUNT.getPath());
+        int amount = itemSection.getInt(Path.ITEM_AMOUNT.getPath(), 1);
         materialSection = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
 
         String displayName = Format.format(itemSection.getString(Path.ITEM_NAME.getPath(), ""), player);
@@ -105,9 +102,8 @@ public class ItemManager {
             if (!formatLore.isEmpty()) {
                 itemMeta.setLore(formatLore);
             }
-
             NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
-            itemMeta.getPersistentDataContainer().set(ECO_ITEM, PersistentDataType.STRING, itemName);
+            itemMeta.getPersistentDataContainer().set(ECO_ITEM, PersistentDataType.STRING, itemID);
 
             item.setItemMeta(itemMeta);
 
@@ -130,32 +126,32 @@ public class ItemManager {
         return material;
     }
 
-    public static boolean isEcoItem(ItemStack item, String itemName) {
+    public static boolean isEcoItem(ItemStack item) {
 
         NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 
-        if (container.has(ECO_ITEM, PersistentDataType.STRING))
-            return Objects.equals(container.get(ECO_ITEM, PersistentDataType.STRING), itemName);
-
-        return false;
+        return container.has(ECO_ITEM, PersistentDataType.STRING);
     }
 
     public static void setItems(Player player) {
         ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
         if (items == null) return;
 
-        for (String itemName : items.getKeys(false)) {
-            int slot = items.getInt(itemName + ".slot");
+        for (String itemID : items.getKeys(false)) {
+            ConfigurationSection itemIDSection = items.getConfigurationSection(itemID);
+            int slot = itemIDSection.getInt(Path.ITEM_SLOT.getPath());
 
-            player.getInventory().setItem(slot, createItem(player, itemName));
+            player.getInventory().setItem(slot, createItem(player, itemID, itemIDSection));
         }
     }
-    public static void giveItem(Player player, String itemName) {
+    public static void giveItem(Player player, String itemID) {
         ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
-        ItemStack item = createItem(player, itemName);
+        ConfigurationSection itemIDSection = items.getConfigurationSection(itemID);
 
-        if (item == null || items == null) {
+        ItemStack item = createItem(player, itemID, itemIDSection);
+
+        if (item == null) {
             Chat.sendMessage(MESSAGES.ITEM_NOT_FOUND(), player);
             return;
         }
