@@ -1,4 +1,4 @@
-![](https://imgur.com/Uqd3iWo.png)
+![header](https://imgur.com/KHewf1T.png)
 
 ## DOWNLOADS:
 [SpigotMC.org](https://www.spigotmc.org/resources/ecolobby-for-lobby-plugin.101547/) \
