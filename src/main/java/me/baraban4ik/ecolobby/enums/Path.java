@@ -85,6 +85,11 @@ public enum Path {
     HIDE_STREAM("Hiders.hide_stream"),
     HIDE_PLAYERS("Hiders.hide_players"),
 
+    // GUI
+    GUI_TITLE("title"),
+    GUI_SIZE("size"),
+
+
     // Items:
     ITEMS("Items"),
     ITEM_NAME("name"),
@@ -93,6 +98,10 @@ public enum Path {
     ITEM_AMOUNT("amount"),
     ITEM_ENCHANTS("enchantments"),
     ITEM_FLAGS("flags"),
+    ITEM_SLOT("slot"),
+    ITEM_SLOTS("slots"),
+    ITEM_ACTIONS("actions"),
+    ITEM_REFRESH("refresh"),
 
     // BossBar:
     BOSSBAR("enabled"),
@@ -101,6 +110,12 @@ public enum Path {
     BOSSBAR_STYLE("style"),
     BOSSBAR_REFRESH("refresh"),
     BOSSBAR_PROGRESS("progress"),
+
+    // ScoreBoard:
+    SCOREBOARD("enabled"),
+    SCOREBOARD_TITLE("title"),
+    SCOREBOARD_LINES("lines"),
+    SCOREBOARD_REFRESH("refresh"),
 
     // TabList:
     TABLIST("enabled"),
@@ -111,6 +126,7 @@ public enum Path {
     TABLIST_PREFIX("tabPrefix"),
     TABLIST_SUFFIX("tabSuffix"),
 
+    // Messages:
     PREFIX("prefix"),
     NO_PERMISSION("no_permission"),
 
