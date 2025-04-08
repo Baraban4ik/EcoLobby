@@ -6,7 +6,7 @@ import me.baraban4ik.ecolobby.managers.ActionManager;
 import me.baraban4ik.ecolobby.managers.ItemManager;
 import me.baraban4ik.ecolobby.utils.Format;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GUI {
@@ -31,6 +30,7 @@ public class GUI {
 
     private ConfigurationSection items;
     private Inventory gui;
+    public boolean isActive = true;
 
     private final String name;
 
@@ -40,7 +40,10 @@ public class GUI {
     }
     private void loadData() {
         FileConfiguration guiConfig = EcoLobby.getConfigurations().getGui(name);
-        if (guiConfig == null) return;
+        if (guiConfig == null) {
+            isActive = false;
+            return;
+        }
 
         title = guiConfig.getString(Path.GUI_TITLE.getPath());
         size = guiConfig.getInt(Path.GUI_SIZE.getPath());
@@ -49,6 +52,8 @@ public class GUI {
 
 
     public void open(Player player) {
+        if (!isActive) return;
+
         gui = Bukkit.createInventory(null, size, Format.format(title, player));
         addItems(player);
 
