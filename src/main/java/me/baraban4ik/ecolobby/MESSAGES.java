@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
+
 
 public class MESSAGES {
 
@@ -201,6 +202,16 @@ public class MESSAGES {
             .append(Component.text("Предмет с таким названием не найден!", TextColor.color(0xf2ede0)))
             .build();
 
+    private static final Component GUI_NOT_FOUND = Component.text()
+            .append(PREFIX)
+            .append(Component.text("GUI with this name not found!", TextColor.color(0xf2ede0)))
+            .build();
+
+    private static final Component GUI_NOT_FOUND_RU = Component.text()
+            .append(PREFIX)
+            .append(Component.text("GUI с таким названием не найден!", TextColor.color(0xf2ede0)))
+            .build();
+
     private static final Component SUCCESSFULLY_GIVE_ITEM = Component.text()
             .append(PREFIX)
             .append(Component.text("You have successfully given an item!", TextColor.color(0xf2ede0)))
@@ -280,6 +291,10 @@ public class MESSAGES {
 
     public static Component ITEM_NOT_FOUND() {
         return getLanguage().equals("ru") ? ITEM_NOT_FOUND_RU : ITEM_NOT_FOUND;
+    }
+
+    public static Component GUI_NOT_FOUND() {
+        return getLanguage().equals("ru") ? GUI_NOT_FOUND_RU : GUI_NOT_FOUND;
     }
 
     public static Component SUCCESSFULLY_GIVE_ITEM() {
