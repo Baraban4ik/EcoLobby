@@ -1,18 +1,16 @@
 package me.baraban4ik.ecolobby.utils;
 
 import com.google.common.collect.Lists;
+import me.baraban4ik.ecolobby.EcoLobby;
+import me.baraban4ik.ecolobby.enums.Path;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
 
 public class Configurations {
 
@@ -23,13 +21,22 @@ public class Configurations {
     private final JavaPlugin plugin;
 
 
+    public static FileConfiguration config;
+    public static FileConfiguration messages;
+
+    public static FileConfiguration itemsConfig;
+    public static FileConfiguration spawnConfig;
+    public static FileConfiguration tablistConfig;
+    public static FileConfiguration bossBarConfig;
+    public static FileConfiguration scoreboardConfig;
+
     public Configurations(JavaPlugin plugin, String... names) {
         this.plugin = plugin;
         this.names = Lists.newArrayList(names);
         this.load();
     }
 
-    public void load() {
+    private void load() {
         for (String name : names) {
             File config = new File(plugin.getDataFolder(), name +".yml");
 
@@ -40,9 +47,11 @@ public class Configurations {
             FileConfiguration configuration = YamlConfiguration.loadConfiguration(config);
             configurations.put(name, configuration);
         }
+        this.loadConfigurations();
+        this.loadGUIs();
     }
 
-    public void loadGUIs() {
+    private void loadGUIs() {
         if (config.getBoolean("gui_example")) {
             File gui_example = new File(plugin.getDataFolder(),  "guis/gui_example.yml");
 
@@ -77,17 +86,44 @@ public class Configurations {
     }
 
 
+    private void loadLanguage() {
+        messages = this.getConfig("language/messages");
+
+        if (config.getString(Path.LANGUAGE.getPath()).equalsIgnoreCase("ru"))
+            messages = this.getConfig("language/messages_ru");
+    }
+
+    private void loadConfigurations() {
+        config = this.getConfig("config");
+        spawnConfig = this.getConfig("spawn");
+        itemsConfig = this.getConfig("items");
+        tablistConfig = this.getConfig("tablist");
+        bossBarConfig = this.getConfig("bossbar");
+        scoreboardConfig = this.getConfig("scoreboard");
+
+        this.loadLanguage();
+
+        EcoLobby pl = EcoLobby.getInstance();
+
+        if (!Objects.equals(config.get(Path.CONFIG_VERSION.getPath()), pl.getDescription().getVersion())) {
+
+            File file = new File(pl.getDataFolder(), "config.yml");
+            file.renameTo(new File(pl.getDataFolder(), "config.yml-old"));
+
+            this.reload();
+        }
+    }
+
 
     public void reload() {
         configurations.clear();
         this.load();
-    }
-    public void reloadGUIs() {
+
         guis.clear();
         this.loadGUIs();
     }
 
-    public FileConfiguration getConfig(String name) {
+    private FileConfiguration getConfig(String name) {
         return configurations.get(name);
     }
     public FileConfiguration getGui(String name) {
