@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
 
 public class WorldListener implements Listener {
     @EventHandler (priority = EventPriority.LOWEST)

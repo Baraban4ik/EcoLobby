@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
 
 public class ParticleFallTask extends BukkitRunnable {
     private static final List<Player> playerList = new ArrayList<>();

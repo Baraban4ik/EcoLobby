@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static me.baraban4ik.ecolobby.EcoLobby.scoreboardConfig;
+import static me.baraban4ik.ecolobby.utils.Configurations.scoreboardConfig;
 
 public class ScoreBoardManager {
     private final Map<Player, FastBoard> boards = new HashMap<>();

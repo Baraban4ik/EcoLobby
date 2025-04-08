@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.EcoLobby.tablistConfig;
+import static me.baraban4ik.ecolobby.utils.Configurations.tablistConfig;
 
 public class TabManager {
 

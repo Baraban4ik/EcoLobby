@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 import static me.baraban4ik.ecolobby.EcoLobby.getInstance;
-import static me.baraban4ik.ecolobby.EcoLobby.messages;
+import static me.baraban4ik.ecolobby.utils.Configurations.messages;
 import static me.baraban4ik.ecolobby.utils.Format.format;
 
 public class Chat {

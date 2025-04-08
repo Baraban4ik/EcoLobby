@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.EcoLobby.itemsConfig;
+import static me.baraban4ik.ecolobby.utils.Configurations.itemsConfig;
 
 public class ItemsListener implements Listener {
     @EventHandler()

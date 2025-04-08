@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static me.baraban4ik.ecolobby.EcoLobby.*;
+import static me.baraban4ik.ecolobby.utils.Configurations.spawnConfig;
 
 public class SpawnManager {
     public static void setSpawn(@NotNull Player player, SpawnType type) {

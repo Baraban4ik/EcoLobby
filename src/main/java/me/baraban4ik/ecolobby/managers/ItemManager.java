@@ -27,7 +27,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static me.baraban4ik.ecolobby.EcoLobby.*;
+
+import static me.baraban4ik.ecolobby.utils.Configurations.itemsConfig;
 
 public class ItemManager {
 
@@ -136,7 +137,7 @@ public class ItemManager {
 
     public static void setItems(Player player) {
         ConfigurationSection items = itemsConfig.getConfigurationSection(Path.ITEMS.getPath());
-        if (items == null) return;
+        if (items == null || items.getKeys(false).isEmpty()) return;
 
         for (String itemID : items.getKeys(false)) {
             ConfigurationSection itemIDSection = items.getConfigurationSection(itemID);

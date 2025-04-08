@@ -25,6 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 import static me.baraban4ik.ecolobby.EcoLobby.*;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
 
 public class PlayerListener implements Listener {
 

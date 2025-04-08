@@ -10,8 +10,8 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
-import static me.baraban4ik.ecolobby.EcoLobby.messages;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
+import static me.baraban4ik.ecolobby.utils.Configurations.messages;
 
 public class PreJoinListener implements Listener {
 

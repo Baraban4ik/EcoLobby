@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.baraban4ik.ecolobby.EcoLobby.messages;
+import static me.baraban4ik.ecolobby.utils.Configurations.messages;
 
 public class Format {
 

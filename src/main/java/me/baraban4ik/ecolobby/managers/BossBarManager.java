@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.baraban4ik.ecolobby.EcoLobby.bossBarConfig;
+import static me.baraban4ik.ecolobby.utils.Configurations.bossBarConfig;
 
 public class BossBarManager {
 
