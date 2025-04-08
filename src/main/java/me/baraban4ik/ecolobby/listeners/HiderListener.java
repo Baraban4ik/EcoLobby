@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static me.baraban4ik.ecolobby.EcoLobby.config;
+import static me.baraban4ik.ecolobby.utils.Configurations.config;
 
 public class HiderListener implements Listener {
     @EventHandler
