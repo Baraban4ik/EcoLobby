@@ -135,6 +135,8 @@ Player:
     disable_movements: false # Disable ability to movements
     enable_fly: false # Enable ability to fly
 
+
+    # For best work, put spawn-protection=0 in the server.properties file
     blocks:
       disable_break: true # Disable ability to break blocks
       disable_place: true # Disable ability to place blocks
