@@ -1,6 +1,8 @@
 package me.baraban4ik.ecolobby.managers;
 
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.baraban4ik.ecolobby.EcoLobby;
@@ -21,9 +23,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,16 +37,16 @@ import static me.baraban4ik.ecolobby.utils.Configurations.itemsConfig;
 
 public class ItemManager {
 
-    private static String materialSection;
+    private static String materialString;
     private static boolean isHead = false;
     private static boolean isBaseHead = false;
 
-    public static ItemStack createItem(@NotNull Player player, @NotNull String itemID, ConfigurationSection itemSection)  {
+    public static ItemStack createItem(@NotNull Player player, @NotNull String itemID, ConfigurationSection itemSection) {
         if (itemSection == null)
             return new ItemStack(Material.STONE);
 
         int amount = itemSection.getInt(Path.ITEM_AMOUNT.getPath(), 1);
-        materialSection = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
+        materialString = itemSection.getString(Path.ITEM_MATERIAL.getPath(), "STONE");
 
         String displayName = Format.format(itemSection.getString(Path.ITEM_NAME.getPath(), ""), player);
         List<String> formatLore = itemSection.getStringList(Path.ITEM_LORE.getPath()).stream()
@@ -61,28 +66,44 @@ public class ItemManager {
             ItemMeta itemMeta = item.getItemMeta();
 
             if (isHead) {
-                String owner = materialSection.replace("head-", "");
+                String owner = materialString.split("head-")[1];
                 owner = Format.format(owner, player);
 
                 SkullMeta skullMeta = (SkullMeta) itemMeta;
                 skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
             }
             if (isBaseHead) {
-                String base64 = materialSection.replace("basehead-", "");
+                String base64 = materialString.split("basehead-")[1];
                 SkullMeta skullMeta = (SkullMeta) itemMeta;
 
-                GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-                profile.getProperties().put("textures", new Property("textures", base64));
+                if (EcoLobby.getInstance().getServerVersion() >= 1.181) {
+                    try {
+                        byte[] decoded = Base64.getDecoder().decode(base64);
+                        String json = new String(decoded);
 
-                try {
-                    Field profileField = skullMeta.getClass().getDeclaredField("profile");
-                    profileField.setAccessible(true);
-                    profileField.set(skullMeta, profile);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                        JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+                        String url = obj.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
+
+                        PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+                        PlayerTextures textures = profile.getTextures();
+
+                        textures.setSkin(URI.create(url).toURL());
+                        profile.setTextures(textures);
+
+                        skullMeta.setOwnerProfile(profile);
+                    } catch (Throwable ex) {ex.printStackTrace();}
+                }
+                else {
+                    GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+                    profile.getProperties().put("textures", new Property("textures", base64));
+
+                    try {
+                        Field profileField = skullMeta.getClass().getDeclaredField("profile");
+                        profileField.setAccessible(true);
+                        profileField.set(skullMeta, profile);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {e.printStackTrace();}
                 }
             }
-
             enchantments.forEach(e -> {
                 String[] enchantSplit = e.split(":");
 
@@ -114,13 +135,13 @@ public class ItemManager {
     }
 
     private static Material getMaterial() {
-        Material material = Material.getMaterial(materialSection.toUpperCase());
+        Material material = Material.getMaterial(materialString.toUpperCase());
 
-        if (materialSection.startsWith("head-")) {
+        if (materialString.startsWith("head-")) {
             material = Material.PLAYER_HEAD;
             isHead = true;
         }
-        else if (materialSection.startsWith("basehead-")) {
+        else if (materialString.startsWith("basehead-")) {
             material = Material.PLAYER_HEAD;
             isBaseHead = true;
         }
@@ -128,7 +149,6 @@ public class ItemManager {
     }
 
     public static boolean isEcoItem(ItemStack item) {
-
         NamespacedKey ECO_ITEM = new NamespacedKey(EcoLobby.getInstance(), "ECO_ITEM");
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 
@@ -141,8 +161,9 @@ public class ItemManager {
 
         for (String itemID : items.getKeys(false)) {
             ConfigurationSection itemIDSection = items.getConfigurationSection(itemID);
-            int slot = itemIDSection.getInt(Path.ITEM_SLOT.getPath());
+            if (itemIDSection == null) return;
 
+            int slot = itemIDSection.getInt(Path.ITEM_SLOT.getPath());
             player.getInventory().setItem(slot, createItem(player, itemID, itemIDSection));
         }
     }
