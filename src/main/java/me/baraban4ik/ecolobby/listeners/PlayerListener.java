@@ -1,6 +1,7 @@
 package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.enums.Path;
+import me.baraban4ik.ecolobby.gui.GUIData;
 import me.baraban4ik.ecolobby.utils.Chat;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -18,9 +19,11 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.List;
 
@@ -65,9 +68,10 @@ public class PlayerListener implements Listener {
 
             int duration = (time == 0) ? -1 : time;
 
-            if (getInstance().getServerVersion() < 1.19) {
+            if (getInstance().getServerVersion() < 1.194) {
                 duration = (time == 0) ? Integer.MAX_VALUE : time;
             }
+
             player.addPotionEffect(new PotionEffect(type, duration, level-1, false, particles));
         }
         Bukkit.getOnlinePlayers().forEach(
@@ -142,6 +146,7 @@ public class PlayerListener implements Listener {
 
 
     private void spawnParticleEffect(Player player, Location location) {
+        System.out.println(location);
         if (config.getBoolean(Path.ABILITIES_BLOCKS_PARTICLE_EFFECT.getPath())) player.playEffect(location, Effect.SMOKE, BlockFace.UP);
     }
     private void sendDenyMessage(Player player, Path messagePath) {
@@ -198,6 +203,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlocksInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+
         if (player.hasPermission("ecolobby.bypass.blocks.interact")) return;
         if (!config.getBoolean(Path.ABILITIES_BLOCKS_INTERACT.getPath())) return;
 
@@ -208,7 +214,7 @@ public class PlayerListener implements Listener {
         boolean isPhysical = event.getAction() == Action.PHYSICAL;
 
         if (isRightClick && block.getType().isInteractable() || (isPhysical && block.getType() == Material.FARMLAND)) {
-            spawnParticleEffect(player, event.getPlayer().getLocation());
+            spawnParticleEffect(player, block.getLocation());
             sendDenyMessage(player, Path.DENY_INTERACT_BLOCKS);
 
             playDenySound(player, Path.ABILITIES_BLOCKS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
@@ -217,15 +223,13 @@ public class PlayerListener implements Listener {
         }
     }
 
-
-
     @EventHandler
     public void onMoveItems(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
             if (player.hasPermission("ecolobby.bypass.items.move")) return;
 
-            if (config.getBoolean(Path.ABILITIES_ITEMS_MOVE.getPath())) {
+            if (config.getBoolean(Path.ABILITIES_ITEMS_MOVE.getPath()) && !GUIData.containsInventory(event.getInventory())) {
                 playDenySound(player, Path.ABILITIES_ITEMS_DENY_SOUND, Path.ABILITIES_BLOCKS_DENY_SOUND_SOUND);
                 event.setCancelled(true);
             }
