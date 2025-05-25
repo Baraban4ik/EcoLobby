@@ -37,9 +37,9 @@ public class EcoLobby extends JavaPlugin {
     public static boolean UPDATE_AVAILABLE = false;
     public static String UPDATE_VERSION = "";
 
-    TabManager tabManager = new TabManager();
-    BossBarManager barManager = new BossBarManager();
-    ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
+    private final TabManager tabManager = new TabManager();
+    private final BossBarManager barManager = new BossBarManager();
+    private final ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
 
 
     @Override
@@ -78,8 +78,6 @@ public class EcoLobby extends JavaPlugin {
         }
         updateWorld();
         Chat.sendMessage(MESSAGES.ENABLE_MESSAGE(), Bukkit.getConsoleSender());
-
-        System.out.println(configurations.getGUIs());
     }
 
     @Override
@@ -167,14 +165,11 @@ public class EcoLobby extends JavaPlugin {
         updateWorld();
     }
 
+
     public Float getServerVersion() {
-        String version = Bukkit.getVersion();
-        String pattern = "[^0-9\\.\\:]";
-        String versionMinecraft = version.replaceAll(pattern, "");
+        String version = Bukkit.getBukkitVersion().split("-")[0];
+        String[] versionParts = version.split("\\.");
 
-        return Float.parseFloat(versionMinecraft.substring(versionMinecraft.indexOf(":") + 1, versionMinecraft.lastIndexOf(".")));
+        return Float.parseFloat(versionParts[0] + "." + versionParts[1] + versionParts[2]);
     }
-
-
-
 }
