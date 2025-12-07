@@ -6,93 +6,108 @@ import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import me.baraban4ik.ecolobby.EcoLobby;
-import me.baraban4ik.ecolobby.MESSAGES;
-import me.baraban4ik.ecolobby.enums.Path;
-import me.baraban4ik.ecolobby.enums.SpawnType;
-import me.baraban4ik.ecolobby.managers.*;
-import me.baraban4ik.ecolobby.tasks.ParticleFallTask;
-import me.baraban4ik.ecolobby.utils.Chat;
+import me.baraban4ik.ecolobby.config.ConfigManager;
+import me.baraban4ik.ecolobby.config.files.JoinConfig;
+import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.SpawnConfig;
+import me.baraban4ik.ecolobby.enums.Permission;
+import me.baraban4ik.ecolobby.enums.types.SpawnType;
+import me.baraban4ik.ecolobby.managers.ActionManager;
+import me.baraban4ik.ecolobby.managers.ItemManager;
+import me.baraban4ik.ecolobby.message.PluginMessageSender;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-
-import static me.baraban4ik.ecolobby.EcoLobby.*;
-import static me.baraban4ik.ecolobby.utils.Configurations.*;
+import java.util.Objects;
 
 public class JoinListener implements Listener {
 
+    private final EcoLobby plugin = EcoLobby.getInstance();
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        JoinConfig joinConfig = ConfigManager.getJoinConfig();
         Player player = event.getPlayer();
 
-        if (config.getBoolean(Path.TELEPORT_TO_SPAWN.getPath())) teleportToSpawn(player);
-        if (config.getBoolean(Path.MUSIC.getPath()) && EcoLobby.NOTE_BLOCK_API) playMusic(player);
+        if (joinConfig.isClearChat()) clearChat(player);
 
-        if (bossBarConfig.getBoolean(Path.BOSSBAR.getPath())) {
-            BossBarManager barManager = new BossBarManager();
-            barManager.sendBossBar(player);
-        }
-        if (scoreboardConfig.getBoolean(Path.SCOREBOARD.getPath())) {
-            ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
-            scoreBoardManager.send(player);
+        if ((ConfigManager.getConfig().isCheckUpdates() && EcoLobby.UPDATE_AVAILABLE) &&
+                (Permission.UPDATE_NOTIFY.has(player) || player.isOp())) {
+            PluginMessageSender.sendUpdateMessage(player);
         }
 
-        if (config.getBoolean(Path.CLEAR_CHAT.getPath())) {
-            for (int i = 0; i < 100; i++) {
-                player.sendMessage("");
-            }
-        }
+        ActionManager.execute(player, joinConfig.getActions());
+        ItemManager.giveJoinItems(player);
+        setPlayersStatistics();
 
-        ActionManager.execute(player, config.getStringList(Path.JOIN_ACTIONS.getPath()));
-        ItemManager.setItems(player);
+        plugin.getDisplayManagers().forEach(d -> d.send(player));
+        plugin.getAmbientManager().addPlayer(player);
 
-        if (config.getBoolean(Path.CHECK_UPDATES.getPath()) && EcoLobby.UPDATE_AVAILABLE)
-            sendUpdateAvailable(player);
-
-        ParticleFallTask.add(player);
+        if (joinConfig.isTeleportToSpawn()) teleportToSpawn(player);
+        if (joinConfig.isMusicEnabled()) playMusic(joinConfig, player);
     }
 
+    public static void setPlayersStatistics() {
+        PlayerConfig playerConfig = ConfigManager.getPlayerConfig();
+        double playerHealth = playerConfig.getHealth();
 
-    private void sendUpdateAvailable(Player player) {
-        if (player.hasPermission("ecolobby.notify") || player.isOp()) {
-            Chat.sendMessage(MESSAGES.NEW_VERSION(UPDATE_VERSION), player);
-        }
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            player.setGameMode(playerConfig.getGameMode());
+
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(playerHealth);
+            player.setHealth(playerHealth);
+
+            player.setFoodLevel(playerConfig.getFoodLevel());
+            player.setLevel(playerConfig.getLevelExp());
+
+            player.getActivePotionEffects().forEach(
+                    activeEffect -> player.removePotionEffect(activeEffect.getType())
+            );
+            player.addPotionEffects(playerConfig.getEffects());
+            player.setAllowFlight(!playerConfig.isDisableFly());
+        });
     }
+
 
     private void teleportToSpawn(Player player) {
-        Location spawn = SpawnManager.getSpawn(SpawnType.MAIN);
+        SpawnConfig spawnConfig = ConfigManager.getSpawnConfig();
+        Location spawn = spawnConfig.getSpawn(SpawnType.MAIN);
 
         if (!player.hasPlayedBefore()) {
-            spawn = SpawnManager.getSpawn(SpawnType.FIRST);
+            spawn = spawnConfig.getSpawn(SpawnType.FIRST);
 
             if (spawn == null)
-                spawn = SpawnManager.getSpawn(SpawnType.MAIN);
+                spawn = spawnConfig.getSpawn(SpawnType.MAIN);
         }
 
         if (spawn != null) player.teleport(spawn);
     }
 
-    private void playMusic(Player player) {
-        List<String> tracks = config.getStringList(Path.MUSIC_TRACKS.getPath());
+    private void clearChat(Player player) {
+        for (int i = 0; i < 100; i++)
+            player.sendMessage("");
+    }
 
-        boolean repeatMode = config.getBoolean(Path.MUSIC_REPEAT.getPath(), false);
-        boolean random = config.getBoolean(Path.MUSIC_RANDOM.getPath(), false);
 
-        List<Song> songList = new ArrayList<>();
+    private void playMusic(JoinConfig joinConfig, Player player) {
+        List<String> tracks = joinConfig.getMusicTracks();
 
-        for (String track : tracks) {
-            Song song = NBSDecoder.parse(new File(getInstance().getDataFolder(), track));
-            if (song != null) songList.add(song);
-        }
-        if (songList.isEmpty()) return;
+        boolean repeatMode = joinConfig.isMusicRepeat();
+        boolean random = joinConfig.isMusicRandom();
 
-        Playlist playlist = new Playlist(songList.toArray(new Song[0]));
+        Song[] songs = tracks.stream()
+                .map(track -> NBSDecoder.parse(new File(plugin.getDataFolder() + "/tracks/", track)))
+                .filter(Objects::nonNull)
+                .toArray(Song[]::new);
+
+        Playlist playlist = new Playlist(songs);
         RadioSongPlayer rsp = new RadioSongPlayer(playlist);
 
         if (repeatMode) rsp.setRepeatMode(RepeatMode.ALL);
@@ -103,5 +118,4 @@ public class JoinListener implements Listener {
         rsp.addPlayer(player);
         rsp.setPlaying(true);
     }
-
 }
