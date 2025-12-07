@@ -1,11 +1,12 @@
 package me.baraban4ik.ecolobby.actions;
 
+
 import me.baraban4ik.ecolobby.EcoLobby;
-import me.baraban4ik.ecolobby.models.PlayerAction;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class ConnectAction implements PlayerAction {
     @Override
@@ -17,6 +18,8 @@ public class ConnectAction implements PlayerAction {
             out.writeUTF(action);
 
             player.sendPluginMessage(EcoLobby.getInstance(), "BungeeCord", data.toByteArray());
-        } catch (Exception ignored) {}
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
