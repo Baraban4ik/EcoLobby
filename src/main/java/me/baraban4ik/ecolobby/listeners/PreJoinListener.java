@@ -1,51 +1,49 @@
 package me.baraban4ik.ecolobby.listeners;
 
-
-import me.baraban4ik.ecolobby.enums.Path;
-import me.baraban4ik.ecolobby.utils.Format;
+import me.baraban4ik.ecolobby.config.ConfigManager;
+import me.baraban4ik.ecolobby.config.files.Config;
+import me.baraban4ik.ecolobby.config.files.MessagesConfig;
+import me.baraban4ik.ecolobby.message.FormattedMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.List;
 
-import static me.baraban4ik.ecolobby.utils.Configurations.config;
-import static me.baraban4ik.ecolobby.utils.Configurations.messages;
 
 public class PreJoinListener implements Listener {
 
     @EventHandler
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
-        if (config.getBoolean(Path.WHITELIST.getPath())) {
-            whitelist(event, event.getName());
+        Config config = ConfigManager.getConfig();
+        MessagesConfig messages = ConfigManager.getMessagesConfig();
+
+        if (config.isWhitelistEnabled()) {
+            kickPlayer(event, config.getWhitelistPlayers(),
+                    messages.getWhitelistKick(),
+                    AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
+                    false);
         }
-        else if (config.getBoolean(Path.BLACKLIST.getPath())) {
-            blacklist(event, event.getName());
+        else if (config.isBlacklistEnabled()) {
+            kickPlayer(event, config.getBlacklistPlayers(),
+                    messages.getBlacklistKick(),
+                    AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                    true);
+        }
+
+    }
+
+    private void kickPlayer(AsyncPlayerPreLoginEvent event, List<String> players, FormattedMessage message, AsyncPlayerPreLoginEvent.Result result, boolean shouldContain) {
+        boolean contains = players.contains(event.getName());
+
+        if (contains == shouldContain) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(event.getUniqueId());
+
+            event.setLoginResult(result);
+            event.setKickMessage(message.toStringOffline(player));
         }
     }
 
-    private void whitelist(AsyncPlayerPreLoginEvent event, String playerName) {
-        List<String> players = config.getStringList(Path.WHITELIST_PLAYERS.getPath());
-
-        if (!players.contains(playerName)) {
-            String kickPathMessage = messages.getString(Path.WHITELIST_KICK.getPath());
-            String kickMessage = Format.format(kickPathMessage, Bukkit.getPlayer(playerName));
-
-            event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST);
-            event.setKickMessage(kickMessage);
-        }
-    }
-
-    private void blacklist(AsyncPlayerPreLoginEvent event, String playerName) {
-        List<String> players = config.getStringList(Path.BLACKLIST_PLAYERS.getPath());
-
-        if (players.contains(playerName)) {
-            String kickPathMessage = messages.getString(Path.BLACKLIST_KICK.getPath());
-            String kickMessage = Format.format(kickPathMessage, Bukkit.getPlayer(playerName));
-
-            event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-            event.setKickMessage(kickMessage);
-        }
-    }
 }
