@@ -1,50 +1,72 @@
 package me.baraban4ik.ecolobby.tasks;
 
-import me.baraban4ik.ecolobby.enums.Path;
+import me.baraban4ik.ecolobby.EcoLobby;
+import me.baraban4ik.ecolobby.config.ConfigManager;
+import me.baraban4ik.ecolobby.config.files.WorldsConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static me.baraban4ik.ecolobby.utils.Configurations.config;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ParticleFallTask extends BukkitRunnable {
-    private static final List<Player> playerList = new ArrayList<>();
 
-    public static void add(Player player) {
-        playerList.add(player);
+    private final World world;
+    private final Set<Player> players = new HashSet<>();
+
+    public ParticleFallTask(World world) {
+        this.world = world;
     }
 
-    public static void remove(Player player) {
-        playerList.remove(player);
-    }
-
-
-    @Override
-    public void run() {
-        if (config.getBoolean(Path.FALL_PARTICLES.getPath())) {
-            int amount = config.getInt(Path.FALL_PARTICLES_AMOUNT.getPath());
-            playerList.forEach(player -> IntStream.range(0, amount).forEach(i -> spawnFallParticles(player)));
+    public void add(Player player) {
+        if (!players.contains(player) && player.getWorld().equals(world)) {
+            players.add(player);
         }
     }
 
-    private static void spawnFallParticles(Player player) {
-        double radius = config.getDouble(Path.FALL_PARTICLES_RADIUS.getPath());
-        Location location = player.getLocation();
+    public void remove(Player player) {
+        players.remove(player);
+    }
 
+    @Override
+    public void run() {
+        WorldsConfig worldsConfig = ConfigManager.getWorldsConfig();
+        if (!worldsConfig.isAmbientEnabled(world)) return;
+
+        int amount = worldsConfig.getAmbientAmount(world);
+        double radius = worldsConfig.getAmbientRadius(world);
+        Particle particle = worldsConfig.getAmbientParticle(world);
+
+        for (Player player : players) {
+            if (!player.isOnline() || !player.getWorld().equals(world)) continue;
+
+            for (int i = 0; i < amount; i++) {
+                spawnFallParticles(player, radius, particle);
+            }
+        }
+    }
+
+    private void spawnFallParticles(Player player, double radius, Particle particle) {
+        Location location = player.getLocation();
         double min = -radius;
 
         double x = Math.random() * (radius - min) + min;
         double y = Math.random() * (radius - min) + min;
         double z = Math.random() * (radius - min) + min;
 
-        Location newLocation = new Location(location.getWorld(), location.getX() + x, location.getY() + y, location.getZ() + z);
-
-        Particle particle = Particle.valueOf(config.getString(Path.FALL_PARTICLES_PARTICLE.getPath()).toUpperCase());
+        Location newLocation = location.clone().add(x, y, z);
         player.spawnParticle(particle, newLocation, 0, 25.0F, 13.0F, 8.0F, 0.0F);
+    }
+
+    public void start() {
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getWorld().equals(world))
+                .forEach(this::add);
+
+        runTaskTimer(EcoLobby.getInstance(), 0L, 1L);
     }
 }
