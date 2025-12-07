@@ -9,9 +9,11 @@ public class GUIData {
 
     private static final Map<Inventory, GUI>  inventories = new HashMap<>();
 
-
     public static void addInventory(Inventory inventory, GUI gui) {
         inventories.put(inventory, gui);
+    }
+    public static void removeInventory(Inventory inventory) {
+        inventories.remove(inventory);
     }
 
     public static GUI getGUI(Inventory inventory) {
