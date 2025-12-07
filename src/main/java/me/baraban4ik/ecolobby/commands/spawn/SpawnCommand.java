@@ -1,10 +1,11 @@
 package me.baraban4ik.ecolobby.commands.spawn;
 
 import me.baraban4ik.ecolobby.commands.base.AbstractCommand;
-import me.baraban4ik.ecolobby.enums.Path;
-import me.baraban4ik.ecolobby.enums.SpawnType;
-import me.baraban4ik.ecolobby.managers.SpawnManager;
-import me.baraban4ik.ecolobby.utils.Chat;
+import me.baraban4ik.ecolobby.config.ConfigManager;
+
+import me.baraban4ik.ecolobby.config.files.MessagesConfig;
+import me.baraban4ik.ecolobby.enums.Permission;
+import me.baraban4ik.ecolobby.enums.types.SpawnType;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,18 +16,20 @@ public class SpawnCommand extends AbstractCommand {
 
     @Override
     public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
-        if (!isPlayer(sender)) return;
+        if (isNotPlayer(sender)) return;
         Player player = (Player) sender;
 
-        if (hasPermission(player, "ecolobby.command.spawn")) {
-            Location spawn = SpawnManager.getSpawn(SpawnType.MAIN);
+        if (Permission.COMMAND_SPAWN.has(player, true)) {
+            MessagesConfig messages = ConfigManager.getMessagesConfig();
+
+            Location spawn = ConfigManager.getSpawnConfig().getSpawn(SpawnType.MAIN);
 
             if (spawn == null) {
-                Chat.sendPathMessage(Path.NULL_SPAWN, player);
+                messages.getNullSpawn().send(player);
                 return;
             }
             player.teleport(spawn);
-            Chat.sendPathMessage(Path.TELEPORTED_SPAWN, player);
+            messages.getTeleportedSpawn().send(player);
         }
     }
 }
