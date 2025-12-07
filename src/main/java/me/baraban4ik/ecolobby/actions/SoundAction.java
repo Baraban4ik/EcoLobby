@@ -1,6 +1,5 @@
 package me.baraban4ik.ecolobby.actions;
 
-import me.baraban4ik.ecolobby.models.PlayerAction;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
