@@ -1,7 +1,9 @@
 package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.EcoLobby;
-import me.baraban4ik.ecolobby.enums.Path;
+import me.baraban4ik.ecolobby.config.ConfigManager;
+
+import me.baraban4ik.ecolobby.config.files.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,15 +13,16 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static me.baraban4ik.ecolobby.utils.Configurations.config;
-
 public class HiderListener implements Listener {
+
+    private final Config config = ConfigManager.getConfig();
+
     @EventHandler
     public void hideJoin(PlayerJoinEvent event) {
-        if (config.getBoolean(Path.HIDE_STREAM.getPath()))
+        if (config.isHideStreamAll() || config.isHideStreamJoin())
             event.setJoinMessage(null);
 
-        boolean hidePlayers = config.getBoolean(Path.HIDE_PLAYERS.getPath());
+        boolean hidePlayers = config.isHidePlayers();
 
         for (Player otherPlayer : Bukkit.getServer().getOnlinePlayers()) {
             if (hidePlayers) {
@@ -33,17 +36,17 @@ public class HiderListener implements Listener {
     }
     @EventHandler
     public void hideLeave(PlayerQuitEvent event) {
-        if (config.getBoolean(Path.HIDE_STREAM.getPath()))
+        if (config.isHideStreamAll() || config.isHideStreamLeave())
             event.setQuitMessage(null);
     }
     @EventHandler
     public void hideDeath(PlayerDeathEvent event) {
-        if (config.getBoolean(Path.HIDE_STREAM.getPath()))
+        if (config.isHideStreamAll() || config.isHideStreamDeath())
             event.setDeathMessage(null);
     }
     @EventHandler
     public void hideKick(PlayerKickEvent event) {
-        if (config.getBoolean(Path.HIDE_STREAM.getPath()))
+        if (config.isHideStreamAll() || config.isHideStreamKick())
             event.setLeaveMessage("");
     }
 }
