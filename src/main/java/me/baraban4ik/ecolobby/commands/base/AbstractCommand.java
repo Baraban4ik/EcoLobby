@@ -1,8 +1,7 @@
 package me.baraban4ik.ecolobby.commands.base;
 
-import me.baraban4ik.ecolobby.MESSAGES;
-import me.baraban4ik.ecolobby.enums.Path;
-import me.baraban4ik.ecolobby.utils.Chat;
+import me.baraban4ik.ecolobby.enums.PluginMessage;
+import me.baraban4ik.ecolobby.message.PluginMessageSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,28 +21,25 @@ public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
         subCommands.add(subCommand);
     }
 
-    public boolean hasPermission(@NotNull CommandSender sender, @NotNull String permission) {
-        if (sender.hasPermission(permission)) return true;
-        Chat.sendPathMessage(Path.NO_PERMISSION, sender);
-        return false;
+    public boolean isNotPlayer(CommandSender sender) {
+        if (sender instanceof Player) return false;
+
+        PluginMessageSender.send(sender, PluginMessage.ONLY_PLAYER);
+        return true;
     }
 
-    public boolean isPlayer(@NotNull CommandSender sender) {
-        if (sender instanceof Player) return true;
-        Chat.sendMessage(MESSAGES.ONLY_PLAYER(), sender);
-        return false;
-    }
-
-    public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
             sendHelp(sender);
             return;
         }
 
         String subName = args[0];
+
         for (SubCommand subCommand : subCommands) {
             if (subCommand.getName().equalsIgnoreCase(subName)) {
-                if (!hasPermission(sender, subCommand.getPermission())) return;
+                if (!subCommand.getPermission().has(sender, true)) return;
+
                 String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
                 if (!subCommand.execute(sender, subArgs)) {
                     sendHelp(sender);
@@ -51,6 +47,7 @@ public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
                 return;
             }
         }
+
         sendHelp(sender);
     }
 
@@ -58,7 +55,7 @@ public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             for (SubCommand cmd : subCommands) {
-                if (sender.hasPermission(cmd.getPermission())) {
+                if (cmd.getPermission().has(sender)) {
                     suggestions.add(cmd.getName());
                 }
             }
@@ -78,7 +75,7 @@ public abstract class AbstractCommand implements CommandExecutor, TabCompleter {
     protected void sendHelp(CommandSender sender) {}
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         execute(sender, args);
         return true;
     }
