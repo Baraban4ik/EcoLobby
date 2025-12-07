@@ -6,61 +6,11 @@
 #    ║     (____)\___)(_____)  (____)(_____)(____/(____/ (__)      ║
 #    ║                                                             ║
 #    ╚═════════════════════════════════════════════════════════════╝
-#
-#    ╔═════════════════════════════════════════════════════════════╗
-#    ║                     PLUGIN PLACEHOLDERS                     ║
-#    ║                                                             ║
-#    ║  * %prfx%   - Prefix in the messages.yml file               ║
-#    ║  * %player% - Player nickname                               ║
-#    ║  * %online% - Server online                                 ║
-#    ║  * %NL%     - New line                                      ║
-#    ║                                                             ║
-#    ║  You can also use placeholders from PlaceholderAPI          ║
-#    ║  and hex colors (1.16.5 and higher)                         ║
-#    ║  * Format: #color                                           ║
-#    ║  * Example: #ffaa00                                         ║
-#    ║                                                             ║
-#    ╚═════════════════════════════════════════════════════════════╝
-#  ╔═════════════════════════════════════════════════════════════════╗
-#  ║                        AVAILABLE ACTIONS                        ║
-#  ║                                                                 ║
-#  ║  For anything with an "actions" parameter:                      ║
-#  ║                                                                 ║
-#  ║  * "[MSG] msg"                  - Send a message to a player    ║
-#  ║  * "[MM] msg"                   - Send a message as MiniMessage ║
-#  ║  * "[BROADCAST] msg"            - Send broadcast message        ║
-#  ║                                                                 ║
-#  ║  * "[TITLE] msg;sub_msg"        - Send title to a player        ║
-#  ║  * "[ACTIONBAR] msg"            - Send action-bar message       ║
-#  ║                                                                 ║
-#  ║  * "[PLAYER] command"           - Execute command as player     ║
-#  ║  * "[CONSOLE] command"          - Execute command as console    ║
-#  ║                                                                 ║
-#  ║  * "[CONNECT] server"           - Switch to BungeeCord/Velocity ║
-#  ║  * "[TELEPORT_TO_SPAWN]"        - Teleport player to spawn      ║
-#  ║                                                                 ║
-#  ║  * "[HIDE_PLAYERS]"             - Hides players for you         ║
-#  ║  * "[SHOW_PLAYERS]"             - Shows players for you         ║
-#  ║                                                                 ║
-#  ║  * "[CLOSE_GUI]" - Closes the player's current menus            ║
-#  ║  * "[OPEN_GUI] menu_name" - Opens the menu_name menu            ║
-#  ║                                                                 ║
-#  ║  * "[SOUND] sound;volume;pitch" - Play a sound for player       ║
-#  ║                                                                 ║
-#  ║                                                                 ║
-#  ║  For an action to be performed with a delay,                    ║
-#  ║  you need to add [WAIT:N] to it.                                ║
-#  ║   * EXAMPLE: "[MSG][WAIT:10] msg"                               ║
-#  ║                                                                 ║
-#  ╚═════════════════════════════════════════════════════════════════╝
 
-config_version: ${project.version} # DON'T CHANGE
 check_updates: true # Checking for a new plugin version
 
 # Available languages: en and ru
 language: en
-# Create an example menu
-gui_example: true
 
 Whitelist:
   enabled: false
@@ -72,118 +22,16 @@ Blacklist:
   players:
     - "Baraban4ik"
 
-Join:
-  # Teleport to spawn when joining a server
-  teleport_to_spawn: true
-  # Actions to when joining a server
-  actions:
-    - "[TITLE]#aee495WELCOME;&7Thanks for using EcoLobby"
-    - "[MSG]"
-    - "[MSG]  #aee495EcoLobby"
-    - "[MSG]  &7Thanks for using EcoLobby"
-    - "[MSG]"
-    - "[MSG]  #f2ede0Welcome!"
-    - "[MSG]  #f2ede0You've joined the Main Lobby"
-    - "[MSG]"
-    - "[MSG]  #f2ede0Server site: #aee495ᴡᴡᴡ.sᴇʀᴠᴇʀɴᴀᴍᴇ.ᴄᴏᴍ"
-    - "[MSG]"
-  # Play music when joining a server
-  # NoteBlockAPI required
-  music:
-    enabled: false
-    # You need to place the .nbs file in the tracks folder
-    # And select this file here, example: track: - "music.nbs".
-    tracks:
-      - "music.nbs"
-    repeat: false
-    random: false
-  # Clearing chat when joining a server
-  clear_chat: false
-
 Leave:
   # Clearing items when leaving a server
   clear_items: false
 
-Player:
-  gamemode: ADVENTURE # Available gamemodes: ADVENTURE, CREATIVE, SPECTATOR, SURVIVAL
-  health: 2 # Number of hearts the player has, 1 is half a heart
-  food_level: 20 # Player's hunger amount
-  level_exp: 0
-  # Player effects such as: SPEED (TIME: 0 means infinite)
-  # USAGE: 'EFFECT:LEVEL:TIME:PARTICLE'
-  effects:
-    - "SPEED:1:0:false"
-
-  abilities:
-    disable_chat: true # Disable ability to write to chat
-    disable_commands: # Disable ability to use commands
-      enabled: true
-      tab_complete: false
-
-      allowed: # Allowed commands to use
-        - 'login'
-        - 'l'
-        - 'register'
-        - 'reg'
-        - 'recovery'
-        - 'confirm'
-        - 'changepassword'
-
-    disable_damage: true # Disable ability to take damage
-    disable_hunger: true # Disable ability to hunger
-
-    disable_movements: false # Disable ability to movements
-    enable_fly: false # Enable ability to fly
-
-
-    # For best work, put spawn-protection=0 in the server.properties file
-    blocks:
-      disable_break: true # Disable ability to break blocks
-      disable_place: true # Disable ability to place blocks
-      disable_interact: true # Disable ability to interact blocks
-
-      use_deny_message: true # Send deny message
-      use_particle_effect: true # Show the particle effects
-
-      use_deny_sound: # Play deny sound
-        enabled: true
-        sound: BLOCK_NOTE_BLOCK_PLING
-
-    items:
-      disable_move: true # Disable ability to move items
-      disable_drop: true # Disable ability to drop items
-      disable_pickup: true # Disable ability to pickup items
-
-      # Play deny sound
-      use_deny_sound:
-        enabled: true
-        sound: BLOCK_NOTE_BLOCK_PLING
-
-World:
-  time: 6000 # Set the time in worlds
-  # Setting game rules in the worlds is the same as the /gamerule command
-  # Get the game rules from here https://minecraft.fandom.com/wiki/Game_rule
-  rules:
-    doDaylightCycle: false
-    doWeatherCycle: false
-    doMobSpawning: false
-
-  jump_into_the_void:
-    enabled: true
-    height: 0.0 # The height at which this should work
-    actions:
-      - "[TELEPORT_TO_SPAWN]" # Execute actions when jumping into the void
-
-  fall_particles:
-    enabled: true
-
-    # Particles spawning radius
-    radius: 20
-    # Particles amount
-    amount: 6
-    # Particles. Take there - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html
-    particle: FIREWORKS_SPARK
-
 Hiders:
-  hide_stream: true # Hide messages about join, leave, death, etc.
+  hide_stream:
+    all: true
+    join: false
+    leave: false
+    death: false
+    kick: false
+  # Hide messages about join, leave, death, etc.
   hide_players: true # Hide players from each other
