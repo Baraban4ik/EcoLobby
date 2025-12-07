@@ -1,0 +1,11 @@
+enabled: true
+# BossBar update time in seconds
+refresh: 1
+# BossBar occupancy rate
+progress: 100
+
+title: "#aee495&lsᴇʀᴠᴇʀɴᴀᴍᴇ  &f%online% &7/ &f250 &7⛄"
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarColor.html
+color: GREEN
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarStyle.html
+style: SOLID

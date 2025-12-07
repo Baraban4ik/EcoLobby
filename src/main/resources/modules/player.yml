@@ -1,0 +1,56 @@
+
+statistics:
+  gamemode: ADVENTURE # Available gamemodes: ADVENTURE, CREATIVE, SPECTATOR, SURVIVAL
+  health: 2 # Number of hearts the player has, 1 is half a heart
+  food_level: 20 # Player's hunger amount
+  level_exp: 0
+  # Player effects such as: SPEED (TIME: 0 means infinite)
+  # USAGE: 'EFFECT'
+  # USAGE: 'EFFECT:LEVEL'
+  # USAGE: 'EFFECT:LEVEL:TIME'
+  # USAGE: 'EFFECT:LEVEL:TIME:PARTICLE'
+  effects:
+    - "SPEED:1:0:false"
+
+restrictions:
+  disable_chat: true # Disable ability to write to chat
+  disable_commands: # Disable ability to use commands
+    enabled: true
+    tab_complete: false
+
+    allowed: # Allowed commands to use
+      - 'login'
+      - 'l'
+      - 'register'
+      - 'reg'
+      - 'recovery'
+      - 'confirm'
+      - 'changepassword'
+
+  disable_damage: true # Disable ability to take damage
+  disable_hunger: true # Disable ability to hunger
+
+  disable_movements: false # Disable ability to movements
+  disable_fly: true # Disable ability to fly
+
+  blocks:
+    disable_break: true # Disable ability to break blocks
+    disable_place: true # Disable ability to place blocks
+    disable_interact: true # Disable ability to interact blocks
+
+    use_deny_message: true # Send deny message
+    use_particle_effect: true # Show the particle effects
+
+    use_deny_sound: # Play deny sound
+      enabled: true
+      sound: BLOCK_NOTE_BLOCK_PLING
+
+  items:
+    disable_move: true # Disable ability to move items
+    disable_drop: true # Disable ability to drop items
+    disable_pickup: true # Disable ability to pickup items
+
+    # Play deny sound
+    use_deny_sound:
+      enabled: true
+      sound: BLOCK_NOTE_BLOCK_PLING

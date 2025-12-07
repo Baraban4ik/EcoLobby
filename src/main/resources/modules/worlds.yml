@@ -1,0 +1,30 @@
+default:
+  time: 6000 # Set the time in worlds
+  # Setting game rules in the worlds is the same as the /gamerule command
+  # Get the game rules from here https://minecraft.fandom.com/wiki/Game_rule
+  rules:
+    doDaylightCycle: false
+    doWeatherCycle: false
+    doMobSpawning: false
+
+  void:
+    enabled: true
+    height: 0.0 # The height at which this should work
+    actions:
+      - "[TELEPORT_TO_SPAWN]" # Execute actions when jumping into the void
+
+  ambient:
+    enabled: true
+    # Particles spawning radius
+    radius: 20
+    # Particles amount
+    amount: 6
+    # Particles. Take there - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html
+    particle: FIREWORKS_SPARK
+world:
+  time: 18000
+  void:
+    enabled: true
+    height: 0.0 # The height at which this should work
+    actions:
+      - "[TELEPORT_TO_SPAWN]" # Execute actions when jumping into the void
