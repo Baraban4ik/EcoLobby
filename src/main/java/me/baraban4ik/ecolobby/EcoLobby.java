@@ -126,8 +126,8 @@ public final class EcoLobby extends JavaPlugin {
                 new PreJoinListener(),
                 new WorldListener(),
                 new GUIListener()
-
         );
+        if (NOTE_BLOCK_API) listeners.add(new JoinMusicListener());
 
         listeners.forEach(listener ->
             getServer().getPluginManager().registerEvents(listener, this)
