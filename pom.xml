@@ -6,7 +6,7 @@
 
     <groupId>me.baraban4ik</groupId>
     <artifactId>ecolobby</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
     <packaging>jar</packaging>
 
     <name>EcoLobby</name>
@@ -53,10 +53,6 @@
                         <relocation>
                             <pattern>org.jspecify</pattern>
                             <shadedPattern>me.baraban4ik.lib.jspecify</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.google</pattern>
-                            <shadedPattern>me.baraban4ik.lib.google</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>fr.mrmicky.fastboard</pattern>
