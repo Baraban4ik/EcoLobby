@@ -76,7 +76,8 @@ public class ItemListener implements Listener {
                 String itemId = ItemManager.getItemId(item);
                 ItemConfig itemConfig = EcoLobby.getConfigManager().getItemConfig(itemId);
 
-                ActionManager.execute(event.getPlayer(), itemConfig.getActions());
+                if (itemConfig != null)
+                    ActionManager.execute(event.getPlayer(), itemConfig.getActions());
             }
         }
     }

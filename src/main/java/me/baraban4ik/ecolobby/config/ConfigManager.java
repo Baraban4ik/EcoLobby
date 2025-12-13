@@ -155,6 +155,8 @@ public class ConfigManager {
     public ItemConfig getItemConfig(String itemID) {
         FileConfiguration yaml = getFileConfiguration(ITEMS_FOLDER + itemID);
 
+        if (yaml == null) return null;
+
         ItemConfig itemConfig = new ItemConfig();
         itemConfig.initialize(yaml);
 
