@@ -113,7 +113,8 @@ public final class EcoLobby extends JavaPlugin {
     }
 
     private void registerListeners() {
-        List<Listener> listeners = Arrays.asList(
+        List<Listener> listeners = new ArrayList<>();
+        Collections.addAll(listeners,
                 new BlockListener(),
                 new ChatListener(),
                 new CommandListener(),
@@ -127,10 +128,11 @@ public final class EcoLobby extends JavaPlugin {
                 new WorldListener(),
                 new GUIListener()
         );
+
         if (NOTE_BLOCK_API) listeners.add(new JoinMusicListener());
 
         listeners.forEach(listener ->
-            getServer().getPluginManager().registerEvents(listener, this)
+                getServer().getPluginManager().registerEvents(listener, this)
         );
     }
 
