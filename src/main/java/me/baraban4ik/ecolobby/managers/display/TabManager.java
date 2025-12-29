@@ -1,13 +1,17 @@
 package me.baraban4ik.ecolobby.managers.display;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.TablistConfig;
+import me.baraban4ik.ecolobby.config.files.modules.TablistConfig;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
 import org.bukkit.entity.Player;
 
 public class TabManager extends AbstractDisplayManager<Void> {
 
-    private final TablistConfig tablistConfig = ConfigManager.getTablistConfig();
+    private final TablistConfig tablistConfig;
+
+    public TabManager() {
+        tablistConfig = ConfigManager.getTablistConfig();
+    }
 
     @Override
     public boolean isEnabled() {
