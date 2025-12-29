@@ -7,7 +7,7 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.JoinConfig;
+import me.baraban4ik.ecolobby.config.files.modules.JoinConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,9 +32,25 @@ public class JoinMusicListener implements Listener {
         boolean random = joinConfig.isMusicRandom();
 
         Song[] songs = tracks.stream()
-                .map(track -> NBSDecoder.parse(new File(EcoLobby.getInstance().getDataFolder() + "/tracks/", track)))
+                .map(track -> {
+                    File file = new File(EcoLobby.getInstance().getDataFolder() + "/tracks/", track);
+                    if (!file.exists()) {
+                        EcoLobby.getInstance().getLogger().warning(
+                                "File not found: " + file.getName());
+                        return null;
+                    }
+
+                    try {
+                        return NBSDecoder.parse(file);
+                    } catch (NullPointerException e) {
+                        EcoLobby.getInstance().getLogger().warning(
+                                "Incorrect file type: " + file.getName());
+                        return null;
+                    }
+                })
                 .filter(Objects::nonNull)
                 .toArray(Song[]::new);
+        if (songs.length == 0) return;
 
         Playlist playlist = new Playlist(songs);
         RadioSongPlayer rsp = new RadioSongPlayer(playlist);
