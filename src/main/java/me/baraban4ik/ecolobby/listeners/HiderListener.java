@@ -15,7 +15,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class HiderListener implements Listener {
 
-    private final Config config = ConfigManager.getConfig();
+    private final Config config;
+
+    public HiderListener() {
+        config = ConfigManager.getConfig();
+    }
 
     @EventHandler
     public void hideJoin(PlayerJoinEvent event) {

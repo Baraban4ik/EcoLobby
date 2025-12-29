@@ -2,9 +2,9 @@ package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.JoinConfig;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
-import me.baraban4ik.ecolobby.config.files.SpawnConfig;
+import me.baraban4ik.ecolobby.config.files.modules.JoinConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.data.SpawnConfig;
 import me.baraban4ik.ecolobby.enums.Permission;
 import me.baraban4ik.ecolobby.enums.types.SpawnType;
 import me.baraban4ik.ecolobby.managers.ActionManager;
@@ -20,7 +20,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    private final EcoLobby plugin = EcoLobby.getInstance();
+    private final EcoLobby plugin;
+
+    public JoinListener(EcoLobby plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {

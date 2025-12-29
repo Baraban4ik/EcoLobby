@@ -2,7 +2,7 @@ package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
 import me.baraban4ik.ecolobby.config.files.MessagesConfig;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import me.baraban4ik.ecolobby.enums.Permission;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
 import me.baraban4ik.ecolobby.utils.DenyUtils;
@@ -21,8 +21,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockListener implements Listener {
 
-    private final PlayerConfig playerConfig = ConfigManager.getPlayerConfig();
-    private final MessagesConfig messagesConfig = ConfigManager.getMessagesConfig();
+    private final PlayerConfig playerConfig;
+    private final MessagesConfig messagesConfig;
+
+    public BlockListener() {
+        this.playerConfig = ConfigManager.getPlayerConfig();
+        this.messagesConfig = ConfigManager.getMessagesConfig();
+    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {

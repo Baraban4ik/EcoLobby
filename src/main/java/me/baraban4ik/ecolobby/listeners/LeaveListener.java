@@ -10,7 +10,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LeaveListener implements Listener {
 
-    private final EcoLobby plugin = EcoLobby.getInstance();
+    private final EcoLobby plugin;
+
+    public LeaveListener(EcoLobby plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {

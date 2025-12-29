@@ -1,7 +1,7 @@
 package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +10,11 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class DamageListener implements Listener {
 
-    private final PlayerConfig playerConfig = ConfigManager.getPlayerConfig();
+    private final PlayerConfig playerConfig;
+
+    public DamageListener() {
+        playerConfig = ConfigManager.getPlayerConfig();
+    }
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {

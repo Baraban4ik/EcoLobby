@@ -3,7 +3,7 @@ package me.baraban4ik.ecolobby.listeners;
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.ConfigManager;
 import me.baraban4ik.ecolobby.config.files.ItemConfig;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import me.baraban4ik.ecolobby.enums.Permission;
 import me.baraban4ik.ecolobby.managers.ActionManager;
 import me.baraban4ik.ecolobby.managers.ItemManager;
@@ -21,7 +21,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemListener implements Listener {
 
-    private final PlayerConfig playerConfig = ConfigManager.getPlayerConfig();
+    private final PlayerConfig playerConfig;
+
+    public ItemListener() {
+        playerConfig = ConfigManager.getPlayerConfig();
+    }
 
     @EventHandler
     public void onMoveItems(InventoryClickEvent event) {

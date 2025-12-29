@@ -1,7 +1,7 @@
 package me.baraban4ik.ecolobby.listeners;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import me.baraban4ik.ecolobby.enums.Permission;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +13,11 @@ import java.util.List;
 
 public class CommandListener implements Listener {
 
-    private final PlayerConfig playerConfig = ConfigManager.getPlayerConfig();
+    private final PlayerConfig playerConfig;
+
+    public CommandListener() {
+        playerConfig = ConfigManager.getPlayerConfig();
+    }
 
     @EventHandler()
     public void onCommands(PlayerCommandPreprocessEvent event) {
