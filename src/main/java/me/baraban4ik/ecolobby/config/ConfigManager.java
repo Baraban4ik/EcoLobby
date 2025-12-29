@@ -2,8 +2,9 @@ package me.baraban4ik.ecolobby.config;
 
 import lombok.Getter;
 import me.baraban4ik.ecolobby.config.files.*;
+import me.baraban4ik.ecolobby.config.files.data.SpawnConfig;
+import me.baraban4ik.ecolobby.config.files.modules.*;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
-import me.baraban4ik.ecolobby.config.files.WorldsConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,13 +39,13 @@ public class ConfigManager {
     @Getter private static PlayerConfig playerConfig;
     @Getter private static WorldsConfig worldsConfig;
 
-    private final List<AbstractConfig> iConfigList;
+    private final List<AbstractConfig> configList;
 
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.pluginFolder = plugin.getDataFolder();
 
-        iConfigList = Arrays.asList(
+        configList = Arrays.asList(
                 config = new Config(),
                 messagesConfig = new MessagesConfig(),
                 bossbarConfig = new BossbarConfig(),
@@ -55,7 +56,6 @@ public class ConfigManager {
                 playerConfig = new PlayerConfig(),
                 worldsConfig = new WorldsConfig()
         );
-
         this.load();
     }
 
@@ -71,18 +71,22 @@ public class ConfigManager {
             FileConfiguration configuration = YamlConfiguration.loadConfiguration(file);
             configurations.put(filePath.get(), configuration);
         }
+        tryCreateTracksDirectory();
+
+        loadGUIsConfigs();
+        loadItemsConfigs();
+
+        configList.forEach(config ->
+                config.initialize(getFileConfiguration(config.getPath()))
+        );
+    }
+
+    private void tryCreateTracksDirectory() {
         File tracksFolder = new File(pluginFolder, "tracks");
 
         if (!tracksFolder.exists()) {
             tracksFolder.mkdirs();
         }
-
-        loadGUIsConfigs();
-        loadItemsConfigs();
-
-        iConfigList.forEach(iConfig ->
-                iConfig.initialize(getFileConfiguration(iConfig.getPath()))
-        );
     }
 
     private void loadGUIsConfigs() {
@@ -154,29 +158,19 @@ public class ConfigManager {
 
     public ItemConfig getItemConfig(String itemID) {
         FileConfiguration yaml = getFileConfiguration(ITEMS_FOLDER + itemID);
-
         if (yaml == null) return null;
 
-        ItemConfig itemConfig = new ItemConfig();
-        itemConfig.initialize(yaml);
-
-        return itemConfig;
+        return new ItemConfig(yaml);
     }
-
     public ItemConfig getItemConfig(ConfigurationSection section) {
-        ItemConfig itemConfig = new ItemConfig();
-        itemConfig.initialize(section);
-
-        return itemConfig;
+        return new ItemConfig(section);
     }
 
     public GUIConfig getGUIConfig(String guiID) {
         FileConfiguration yaml = getFileConfiguration(GUIS_FOLDER + guiID);
+        if (yaml == null) return null;
 
-        GUIConfig guiConfig = new GUIConfig();
-        guiConfig.initialize(yaml);
-
-        return guiConfig;
+        return new GUIConfig(yaml);
     }
 
 }
