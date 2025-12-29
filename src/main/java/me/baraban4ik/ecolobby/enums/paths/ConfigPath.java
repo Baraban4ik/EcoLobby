@@ -17,7 +17,7 @@ public enum ConfigPath implements IPath{
     HIDE_STREAM_LEAVE("Hiders.hide_stream.leave"),
     HIDE_STREAM_DEATH("Hiders.hide_stream.death"),
     HIDE_STREAM_KICK("Hiders.hide_stream.kick"),
-    HIDE_PLAYERS("Hiders.hide_stream.players");
+    HIDE_PLAYERS("Hiders.players");
 
     private final String path;
 
