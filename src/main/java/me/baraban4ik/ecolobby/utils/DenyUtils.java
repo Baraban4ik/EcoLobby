@@ -1,7 +1,7 @@
 package me.baraban4ik.ecolobby.utils;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
 import org.bukkit.Effect;
 import org.bukkit.Location;
