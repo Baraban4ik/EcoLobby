@@ -1,11 +1,11 @@
-package me.baraban4ik.ecolobby.config.files;
+package me.baraban4ik.ecolobby.config.files.modules;
 
 import lombok.Getter;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.paths.ScoreboardPath;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
-import org.bukkit.configuration.ConfigurationSection;
+
 @Getter
 public class ScoreboardConfig extends AbstractConfig {
 
@@ -15,9 +15,7 @@ public class ScoreboardConfig extends AbstractConfig {
     private FormattedMessage lines;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         enabled = getBoolean(ScoreboardPath.ENABLED);
         refresh = getInt(ScoreboardPath.REFRESH);
 
