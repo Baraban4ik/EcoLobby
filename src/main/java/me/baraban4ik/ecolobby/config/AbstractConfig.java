@@ -10,10 +10,11 @@ public abstract class AbstractConfig {
 
     protected ConfigurationSection config;
 
-
     public void initialize(ConfigurationSection config) {
         this.config = config;
+        loadValues();
     }
+    protected void loadValues() {}
 
     public String getPath() {
         return "";
@@ -22,7 +23,6 @@ public abstract class AbstractConfig {
     protected String getString(IPath path) {
         return config.getString(path.get());
     }
-
     protected String getString(IPath path, String def) {
         return config.getString(path.get(), def);
     }
@@ -30,11 +30,13 @@ public abstract class AbstractConfig {
     protected List<String> getStringList(IPath path) {
         return config.getStringList(path.get());
     }
+    protected List<Integer> getIntList(IPath path) {
+        return config.getIntegerList(path.get());
+    }
 
     protected FormattedMessage getFormattedMessage(IPath path) {
         return new FormattedMessage(getString(path));
     }
-
     protected FormattedMessage getFormattedMessageList(IPath path) {
         return new FormattedMessage(getStringList(path));
     }
@@ -42,7 +44,6 @@ public abstract class AbstractConfig {
     protected boolean getBoolean(IPath path) {
         return config.getBoolean(path.get());
     }
-
     protected boolean getBoolean(IPath path, boolean def) {
         return config.getBoolean(path.get(), def);
     }
@@ -52,10 +53,6 @@ public abstract class AbstractConfig {
     }
     protected int getInt(IPath path, int def) {
         return config.getInt(path.get(), def);
-    }
-
-    protected List<Integer> getIntList(IPath path) {
-        return config.getIntegerList(path.get());
     }
 
     protected ConfigurationSection getConfigurationSection(IPath path) {
