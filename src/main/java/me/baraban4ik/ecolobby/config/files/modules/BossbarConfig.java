@@ -1,5 +1,4 @@
-package me.baraban4ik.ecolobby.config.files;
-
+package me.baraban4ik.ecolobby.config.files.modules;
 
 import lombok.Getter;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
@@ -9,7 +8,7 @@ import me.baraban4ik.ecolobby.message.FormattedMessage;
 import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.configuration.ConfigurationSection;
+
 @Getter
 public class BossbarConfig extends AbstractConfig {
 
@@ -21,15 +20,26 @@ public class BossbarConfig extends AbstractConfig {
     private BarStyle style;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         enabled = getBoolean(BossbarPath.ENABLED);
         refresh = getInt(BossbarPath.REFRESH);
-        progress = Math.max(0, Math.min(getInt(BossbarPath.PROGRESS, 100) / 100d, 1));
+        progress = getNormalizedProgress();
         title = getFormattedMessage(BossbarPath.TITLE);
-        color = EnumUtils.parseEnum(getString(BossbarPath.COLOR), BarColor.class, BarColor.GREEN);
-        style = EnumUtils.parseEnum(getString(BossbarPath.STYLE), BarStyle.class, BarStyle.SOLID);
+        color = EnumUtils.parseEnum(
+                getString(BossbarPath.COLOR),
+                BarColor.class, BarColor.GREEN
+        );
+        style = EnumUtils.parseEnum(
+                getString(BossbarPath.STYLE),
+                BarStyle.class, BarStyle.SOLID
+        );
+    }
+
+    private double getNormalizedProgress() {
+        int rawProgress = getInt(BossbarPath.PROGRESS, 100);
+        double normalizedProgress = rawProgress / 100d;
+
+        return Math.max(0, Math.min(normalizedProgress, 1));
     }
 
     @Override

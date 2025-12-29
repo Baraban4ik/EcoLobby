@@ -7,7 +7,6 @@ import me.baraban4ik.ecolobby.enums.Language;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.paths.MessagesPath;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
-import org.bukkit.configuration.ConfigurationSection;
 
 
 @Getter
@@ -26,9 +25,7 @@ public class MessagesConfig extends AbstractConfig {
     private FormattedMessage nullSpawn;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         prefix = config.getString(MessagesPath.PREFIX.get());
         noPermission = getFormattedMessage(MessagesPath.NO_PERMISSION);
 

@@ -13,12 +13,14 @@ public class GUIConfig extends AbstractConfig {
     private int size;
     private ConfigurationSection items;
 
-    @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
+    public GUIConfig(ConfigurationSection yaml) {
+        initialize(yaml);
+    }
 
+    @Override
+    protected void loadValues() {
         title = getFormattedMessage(GUIPath.TITLE);
         size = getInt(GUIPath.SIZE);
-        items = config.getConfigurationSection(GUIPath.ITEMS.get());
+        items = getConfigurationSection(GUIPath.ITEMS);
     }
 }

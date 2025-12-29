@@ -5,7 +5,7 @@ import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.Language;
 import me.baraban4ik.ecolobby.enums.paths.ConfigPath;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
-import org.bukkit.configuration.ConfigurationSection;
+import me.baraban4ik.ecolobby.utils.EnumUtils;
 
 import java.util.List;
 
@@ -32,27 +32,28 @@ public class Config extends AbstractConfig {
     private boolean hidePlayers;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
+    protected void loadValues() {
+        checkUpdates = getBoolean(ConfigPath.CHECK_UPDATES, true);
+        language = EnumUtils.parseEnum(
+                getString(ConfigPath.LANGUAGE),
+                Language.class, Language.EN
+        );
 
-        checkUpdates = config.getBoolean(ConfigPath.CHECK_UPDATES.get(), true);
-        language = Language.valueOf(config.getString(ConfigPath.LANGUAGE.get(), "EN").toUpperCase());
+        whitelistEnabled = getBoolean(ConfigPath.WHITELIST_ENABLED);
+        whitelistPlayers = getStringList(ConfigPath.WHITELIST_PLAYERS);
 
-        whitelistEnabled = config.getBoolean(ConfigPath.WHITELIST_ENABLED.get());
-        whitelistPlayers = config.getStringList(ConfigPath.WHITELIST_PLAYERS.get());
+        blacklistEnabled = getBoolean(ConfigPath.BLACKLIST_ENABLED);
+        blacklistPlayers = getStringList(ConfigPath.BLACKLIST_PLAYERS);
 
-        blacklistEnabled = config.getBoolean(ConfigPath.BLACKLIST_ENABLED.get(), false);
-        blacklistPlayers = config.getStringList(ConfigPath.BLACKLIST_PLAYERS.get());
+        leaveClearItems = getBoolean(ConfigPath.LEAVE_CLEAR_ITEMS);
 
-        leaveClearItems = config.getBoolean(ConfigPath.LEAVE_CLEAR_ITEMS.get());
+        hideStreamAll = getBoolean(ConfigPath.HIDE_STREAM_ALL, true);
+        hideStreamJoin = getBoolean(ConfigPath.HIDE_STREAM_JOIN);
+        hideStreamLeave = getBoolean(ConfigPath.HIDE_STREAM_LEAVE);
+        hideStreamDeath = getBoolean(ConfigPath.HIDE_STREAM_DEATH);
+        hideStreamKick = getBoolean(ConfigPath.HIDE_STREAM_KICK);
 
-        hideStreamAll = config.getBoolean(ConfigPath.HIDE_STREAM_ALL.get(), true);
-        hideStreamJoin = config.getBoolean(ConfigPath.HIDE_STREAM_JOIN.get());
-        hideStreamLeave = config.getBoolean(ConfigPath.HIDE_STREAM_LEAVE.get());
-        hideStreamDeath = config.getBoolean(ConfigPath.HIDE_STREAM_DEATH.get());
-        hideStreamKick = config.getBoolean(ConfigPath.HIDE_STREAM_KICK.get());
-
-        hidePlayers = config.getBoolean(ConfigPath.HIDE_PLAYERS.get(), true);
+        hidePlayers = getBoolean(ConfigPath.HIDE_PLAYERS, true);
     }
     @Override
     public String getPath() {

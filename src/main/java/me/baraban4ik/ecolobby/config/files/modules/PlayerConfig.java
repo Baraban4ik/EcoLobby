@@ -1,4 +1,4 @@
-package me.baraban4ik.ecolobby.config.files;
+package me.baraban4ik.ecolobby.config.files.modules;
 
 import lombok.Getter;
 import me.baraban4ik.ecolobby.EcoLobby;
@@ -9,7 +9,6 @@ import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -49,9 +48,7 @@ public class PlayerConfig extends AbstractConfig {
     private Sound itemsDenySound;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         gameMode = EnumUtils.parseEnum(
                 getString(PlayerPath.GAMEMODE),
                 GameMode.class, GameMode.ADVENTURE

@@ -34,10 +34,12 @@ public class ItemConfig extends AbstractConfig {
     @Getter private int amount;
     @Getter private int modelData;
 
-    @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
+    public ItemConfig(ConfigurationSection yaml) {
+        initialize(yaml);
+    }
 
+    @Override
+    protected void loadValues() {
         materialName = getString(ItemPath.MATERIAL, Material.STONE.name());
 
         head = materialName.startsWith("head-");
@@ -59,7 +61,6 @@ public class ItemConfig extends AbstractConfig {
         if (head || base64) {
             return Material.PLAYER_HEAD;
         }
-
         return EnumUtils.parseEnum(materialName, Material.class, Material.STONE);
     }
 

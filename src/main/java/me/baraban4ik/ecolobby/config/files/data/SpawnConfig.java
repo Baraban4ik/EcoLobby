@@ -1,4 +1,4 @@
-package me.baraban4ik.ecolobby.config.files;
+package me.baraban4ik.ecolobby.config.files.data;
 
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
@@ -7,17 +7,20 @@ import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.types.SpawnType;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 public class SpawnConfig extends AbstractConfig {
 
     private Location mainSpawn;
     private Location firstSpawn;
 
-    @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
+    private final ConfigManager configManager;
 
+    public SpawnConfig() {
+        configManager = EcoLobby.getConfigManager();
+    }
+
+    @Override
+    protected void loadValues() {
         mainSpawn = config.getLocation(SpawnType.MAIN.name());
         firstSpawn = config.getLocation(SpawnType.FIRST.name());
     }
@@ -26,13 +29,11 @@ public class SpawnConfig extends AbstractConfig {
         switch (type) {
             case MAIN: return mainSpawn;
             case FIRST: return firstSpawn;
+            default: return null;
         }
-        return null;
     }
 
     public void setSpawn(SpawnType type, Location location) {
-        ConfigManager configManager = EcoLobby.getConfigManager();
-
         switch (type) {
             case MAIN:
                 configManager.setValue(this, SpawnType.MAIN.name(), location);

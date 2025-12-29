@@ -1,10 +1,9 @@
-package me.baraban4ik.ecolobby.config.files;
+package me.baraban4ik.ecolobby.config.files.modules;
 
 import lombok.Getter;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.paths.JoinPath;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 @Getter
@@ -19,9 +18,7 @@ public class JoinConfig extends AbstractConfig {
     private boolean musicRandom;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         teleportToSpawn = getBoolean(JoinPath.TELEPORT_TO_SPAWN);
         actions = getStringList(JoinPath.ACTIONS);
         clearChat = getBoolean(JoinPath.CLEAR_CHAT);

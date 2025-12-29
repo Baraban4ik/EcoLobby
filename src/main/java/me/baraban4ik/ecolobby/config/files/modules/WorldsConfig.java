@@ -1,4 +1,4 @@
-package me.baraban4ik.ecolobby.config.files;
+package me.baraban4ik.ecolobby.config.files.modules;
 
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
@@ -25,9 +25,7 @@ public class WorldsConfig extends AbstractConfig {
     private Particle defaultAmbientParticle;
 
     @Override
-    public void initialize(ConfigurationSection config) {
-        super.initialize(config);
-
+    protected void loadValues() {
         defaultTime = getInt(WorldsPath.DEFAULT_TIME, 6000);
         defaultRules = getConfigurationSection(WorldsPath.DEFAULT_RULES);
 
