@@ -34,4 +34,4 @@ Hiders:
     death: false
     kick: false
   # Hide messages about join, leave, death, etc.
-  hide_players: true # Hide players from each other
+  players: true # Hide players from each other
