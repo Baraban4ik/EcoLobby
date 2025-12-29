@@ -1,7 +1,7 @@
 package me.baraban4ik.ecolobby.managers;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.WorldsConfig;
+import me.baraban4ik.ecolobby.config.files.modules.WorldsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;

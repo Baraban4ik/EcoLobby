@@ -2,7 +2,7 @@ package me.baraban4ik.ecolobby.tasks;
 
 import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.WorldsConfig;
+import me.baraban4ik.ecolobby.config.files.modules.WorldsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;

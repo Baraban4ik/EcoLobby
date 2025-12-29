@@ -2,7 +2,7 @@ package me.baraban4ik.ecolobby.actions;
 
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.PlayerConfig;
+import me.baraban4ik.ecolobby.config.files.modules.PlayerConfig;
 import me.baraban4ik.ecolobby.enums.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
