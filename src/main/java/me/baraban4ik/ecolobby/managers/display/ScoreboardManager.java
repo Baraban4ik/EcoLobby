@@ -2,13 +2,17 @@ package me.baraban4ik.ecolobby.managers.display;
 
 import fr.mrmicky.fastboard.FastBoard;
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.ScoreboardConfig;
+import me.baraban4ik.ecolobby.config.files.modules.ScoreboardConfig;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
 import org.bukkit.entity.Player;
 
 public class ScoreboardManager extends AbstractDisplayManager<FastBoard> {
 
-    private final ScoreboardConfig scoreboardConfig = ConfigManager.getScoreboardConfig();
+    private final ScoreboardConfig scoreboardConfig;
+
+    public ScoreboardManager() {
+        scoreboardConfig = ConfigManager.getScoreboardConfig();
+    }
 
     @Override
     public boolean isEnabled() {
