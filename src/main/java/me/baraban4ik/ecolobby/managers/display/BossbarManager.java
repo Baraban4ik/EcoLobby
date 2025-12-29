@@ -1,7 +1,7 @@
 package me.baraban4ik.ecolobby.managers.display;
 
 import me.baraban4ik.ecolobby.config.ConfigManager;
-import me.baraban4ik.ecolobby.config.files.BossbarConfig;
+import me.baraban4ik.ecolobby.config.files.modules.BossbarConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -10,7 +10,11 @@ import org.bukkit.entity.Player;
 
 public class BossbarManager extends AbstractDisplayManager<BossBar>{
 
-    private final BossbarConfig bossbarConfig = ConfigManager.getBossbarConfig();
+    private final BossbarConfig bossbarConfig;
+
+    public BossbarManager() {
+        bossbarConfig = ConfigManager.getBossbarConfig();
+    }
 
     @Override
     public boolean isEnabled() {
