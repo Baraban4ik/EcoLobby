@@ -55,15 +55,24 @@ lore: []
 #     Example:            head-Baraban4ik
 #   - Base64 encoded head: basehead-<base64_string>
 #     Example:            basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRiZGZhZTZiZjk5MDg1OTExZmIzZTkxYTNiNDIyZjc1MjRlOTYwMTk5NGViNmFjZjhmMzFmY2EzODhkYzM4YSJ9fX0=
+#   - Custom map:         map-<path>
+#     Example:            map-map.png (size 128x128)
 #   - Standard material:  <MATERIAL_NAME>
 #     Example:            STONE
 #
 # Refer to this link for the full list of materials:
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # ─────────────────────────────────────────────────────────
-
 material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTc1YWNjZGExNDBjNmIwZTJlZjE3M2FiOTc1OTU5YTY2ZTljYzI0YzEzMTRmNjAxODU3YjM1NTE5MDExMGExNiJ9fX0=
+
+# SLOT OPTIONS
+# ─────────────────────────────────────────────────────────
+# Use a single slot or a list of slots.
+# Can be numeric (0-39) or EquipmentSlot (e.g., OFF_HAND)
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/EquipmentSlot.html
+# ─────────────────────────────────────────────────────────
 slot: 4
+# Whether to give the item to the player on join
 join_give: true
 amount: 1
 model_data: 1
