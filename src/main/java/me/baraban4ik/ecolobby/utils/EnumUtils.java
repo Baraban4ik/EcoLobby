@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class EnumUtils {
 
@@ -54,10 +55,18 @@ public class EnumUtils {
 
         if (!loggedErrors.contains(key)) {
             loggedErrors.add(key);
-            EcoLobby.getInstance().getLogger().warning(
-                    "Incorrect value '" + value + "' for " + enumClass.getSimpleName() +
-                            ", default value will be used: " + defaultValue
-            );
+            Logger logger  = EcoLobby.getInstance().getLogger();
+
+            if (defaultValue == null) {
+                logger.warning("Incorrect value '" + value + "' for " + enumClass.getSimpleName());
+            }
+            else
+            {
+                EcoLobby.getInstance().getLogger().warning(
+                        "Incorrect value '" + value + "' for " + enumClass.getSimpleName() +
+                                ", default value will be used: " + defaultValue
+                );
+            }
         }
     }
 }
