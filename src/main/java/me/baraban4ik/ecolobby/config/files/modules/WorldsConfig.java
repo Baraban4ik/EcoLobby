@@ -3,7 +3,6 @@ package me.baraban4ik.ecolobby.config.files.modules;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.paths.WorldsPath;
-import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -36,8 +35,8 @@ public class WorldsConfig extends AbstractConfig {
         defaultAmbientEnabled = getBoolean(WorldsPath.DEFAULT_AMBIENT_ENABLED, true);
         defaultAmbientRadius = getInt(WorldsPath.DEFAULT_AMBIENT_RADIUS, 20);
         defaultAmbientAmount = getInt(WorldsPath.DEFAULT_AMBIENT_AMOUNT, 6);
-        defaultAmbientParticle = EnumUtils.parseEnum(
-                getString(WorldsPath.DEFAULT_AMBIENT_PARTICLE),
+        defaultAmbientParticle = getEnum(
+                WorldsPath.DEFAULT_AMBIENT_PARTICLE,
                 Particle.class, Particle.FIREWORKS_SPARK
         );
     }
@@ -90,7 +89,7 @@ public class WorldsConfig extends AbstractConfig {
             return defaultAmbientParticle;
         }
 
-        return EnumUtils.parseEnum(
+        return getEnum(
                 config.getString(world.getName() + WorldsPath.AMBIENT_PARTICLE.get()),
                 Particle.class, Particle.FIREWORKS_SPARK
         );

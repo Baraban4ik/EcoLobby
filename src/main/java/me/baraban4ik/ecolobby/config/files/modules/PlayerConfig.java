@@ -5,7 +5,6 @@ import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.enums.paths.PlayerPath;
-import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -49,8 +48,8 @@ public class PlayerConfig extends AbstractConfig {
 
     @Override
     protected void loadValues() {
-        gameMode = EnumUtils.parseEnum(
-                getString(PlayerPath.GAMEMODE),
+        gameMode = getEnum(
+                PlayerPath.GAMEMODE,
                 GameMode.class, GameMode.ADVENTURE
         );
         health = getInt(PlayerPath.HEALTH);
@@ -74,8 +73,8 @@ public class PlayerConfig extends AbstractConfig {
         blocksUseDenyMessage = getBoolean(PlayerPath.BLOCKS_USE_DENY_MESSAGE);
         blocksUseParticleEffect = getBoolean(PlayerPath.BLOCKS_USE_PARTICLE_EFFECT);
         blocksUseDenySound = getBoolean(PlayerPath.BLOCKS_USE_DENY_SOUND);
-        blocksDenySound = EnumUtils.parseEnum(
-                getString(PlayerPath.BLOCKS_DENY_SOUND),
+        blocksDenySound = getEnum(
+                PlayerPath.BLOCKS_DENY_SOUND,
                 Sound.class, Sound.BLOCK_NOTE_BLOCK_PLING
         );
 
@@ -83,8 +82,8 @@ public class PlayerConfig extends AbstractConfig {
         itemsDisableDrop = getBoolean(PlayerPath.ITEMS_DISABLE_DROP);
         itemsDisablePickup = getBoolean(PlayerPath.ITEMS_DISABLE_PICKUP);
         itemsUseDenySound = getBoolean(PlayerPath.ITEMS_USE_DENY_SOUND);
-        itemsDenySound = EnumUtils.parseEnum(
-                getString(PlayerPath.ITEMS_DENY_SOUND),
+        itemsDenySound = getEnum(
+                PlayerPath.ITEMS_DENY_SOUND,
                 Sound.class, Sound.BLOCK_NOTE_BLOCK_PLING
         );
     }

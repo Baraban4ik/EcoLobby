@@ -5,7 +5,6 @@ import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.Language;
 import me.baraban4ik.ecolobby.enums.paths.ConfigPath;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
-import me.baraban4ik.ecolobby.utils.EnumUtils;
 
 import java.util.List;
 
@@ -34,8 +33,8 @@ public class Config extends AbstractConfig {
     @Override
     protected void loadValues() {
         checkUpdates = getBoolean(ConfigPath.CHECK_UPDATES, true);
-        language = EnumUtils.parseEnum(
-                getString(ConfigPath.LANGUAGE),
+        language = getEnum(
+                ConfigPath.LANGUAGE,
                 Language.class, Language.EN
         );
 

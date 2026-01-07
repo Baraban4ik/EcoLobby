@@ -5,7 +5,6 @@ import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.enums.paths.BossbarPath;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
-import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 
@@ -25,12 +24,13 @@ public class BossbarConfig extends AbstractConfig {
         refresh = getInt(BossbarPath.REFRESH);
         progress = getNormalizedProgress();
         title = getFormattedMessage(BossbarPath.TITLE);
-        color = EnumUtils.parseEnum(
-                getString(BossbarPath.COLOR),
+
+        color = getEnum(
+                BossbarPath.COLOR,
                 BarColor.class, BarColor.GREEN
         );
-        style = EnumUtils.parseEnum(
-                getString(BossbarPath.STYLE),
+        style = getEnum(
+                BossbarPath.STYLE,
                 BarStyle.class, BarStyle.SOLID
         );
     }
