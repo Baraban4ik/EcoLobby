@@ -2,6 +2,7 @@ package me.baraban4ik.ecolobby.config;
 
 import me.baraban4ik.ecolobby.enums.paths.IPath;
 import me.baraban4ik.ecolobby.message.FormattedMessage;
+import me.baraban4ik.ecolobby.utils.EnumUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -57,5 +58,22 @@ public abstract class AbstractConfig {
 
     protected ConfigurationSection getConfigurationSection(IPath path) {
         return config.getConfigurationSection(path.get());
+    }
+
+    protected <E> E getEnum(IPath path, Class<E> enumClass, E defaultValue) {
+        return getEnum(getString(path), enumClass, defaultValue);
+    }
+    protected <E> E getEnum(IPath path, Class<E> enumClass) {
+        return getEnum(getString(path), enumClass);
+    }
+
+    protected <E> E getEnum(String value, Class<E> enumClass) {
+        return getEnum(value, enumClass, null);
+    }
+    protected <E> E getEnum(String value, Class<E> enumClass, E defaultValue) {
+        return EnumUtils.parseEnum(
+                value, enumClass,
+                defaultValue
+        );
     }
 }
