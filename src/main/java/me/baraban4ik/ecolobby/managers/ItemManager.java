@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.baraban4ik.ecolobby.EcoLobby;
+import me.baraban4ik.ecolobby.ImageMapRenderer;
 import me.baraban4ik.ecolobby.config.ConfigManager;
 import me.baraban4ik.ecolobby.config.files.ItemConfig;
 import me.baraban4ik.ecolobby.enums.PluginMessage;
@@ -18,8 +19,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerProfile;
@@ -52,6 +56,15 @@ public class ItemManager {
             if (config.isBase64()) {
                 setBase64(skullMeta, config.getBase64Value());
             }
+        }
+        if (config.isCustomMap()) {
+            MapMeta mapMeta = (MapMeta) itemMeta;
+
+            MapView mapView = Bukkit.createMap(player.getWorld());
+            mapView.getRenderers().forEach(mapView::removeRenderer);
+            mapView.addRenderer(new ImageMapRenderer(config.getCustomMapPath()));
+
+            mapMeta.setMapView(mapView);
         }
 
         itemMeta.setDisplayName(config.getName().toString(player));
@@ -110,9 +123,14 @@ public class ItemManager {
     private static void giveItemToSlot(Player player, ItemConfig config, String itemID) {
         if (!config.isJoinGive()) return;
 
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack item = createItem(player, config, itemID);
+
         config.getSlots().forEach(slot ->
-                player.getInventory().setItem(slot, createItem(player, config, itemID))
+                playerInventory.setItem(slot, item)
         );
+        config.getEquipmentSlots().forEach(slot ->
+                playerInventory.setItem(slot, item));
     }
 
     private static void setBase64(SkullMeta skullMeta, String base64) {
