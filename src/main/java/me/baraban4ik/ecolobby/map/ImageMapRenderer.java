@@ -1,5 +1,6 @@
-package me.baraban4ik.ecolobby;
+package me.baraban4ik.ecolobby.map;
 
+import me.baraban4ik.ecolobby.EcoLobby;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
