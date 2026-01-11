@@ -10,6 +10,7 @@ public enum Permission {
     BYPASS_CHAT("ecolobby.bypass.chat"),
     BYPASS_COMMANDS("ecolobby.bypass.commands"),
     BYPASS_MOVEMENTS("ecolobby.bypass.movements"),
+    BYPASS_FLY("ecolobby.bypass.fly"),
     BYPASS_BLOCKS_BREAK("ecolobby.bypass.blocks.break"),
     BYPASS_BLOCKS_PLACE("ecolobby.bypass.blocks.place"),
     BYPASS_BLOCKS_INTERACT("ecolobby.bypass.blocks.interact"),

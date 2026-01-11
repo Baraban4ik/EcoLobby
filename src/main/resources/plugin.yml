@@ -52,6 +52,8 @@ permissions:
   # Permissions bypass
   ecolobby.bypass.movements:
     default: op
+  ecolobby.bypass.fly:
+    default: op
 
   ecolobby.bypass.chat:
     default: op
@@ -76,6 +78,7 @@ permissions:
     default: op
     children:
       ecolobby.bypass.movements: true
+      ecolobby.bypass.fly: true
 
       ecolobby.bypass.chat: true
       ecolobby.bypass.commands: true
