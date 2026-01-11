@@ -1,6 +1,5 @@
 package me.baraban4ik.ecolobby.config.files.data;
 
-import me.baraban4ik.ecolobby.EcoLobby;
 import me.baraban4ik.ecolobby.config.AbstractConfig;
 import me.baraban4ik.ecolobby.config.ConfigManager;
 import me.baraban4ik.ecolobby.enums.paths.FilePath;
@@ -15,8 +14,8 @@ public class SpawnConfig extends AbstractConfig {
 
     private final ConfigManager configManager;
 
-    public SpawnConfig() {
-        configManager = EcoLobby.getConfigManager();
+    public SpawnConfig(ConfigManager configManager) {
+        this.configManager = configManager;
     }
 
     @Override

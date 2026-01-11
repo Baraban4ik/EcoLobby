@@ -52,7 +52,7 @@ public class ConfigManager {
                 scoreboardConfig = new ScoreboardConfig(),
                 tablistConfig = new TablistConfig(),
                 joinConfig = new JoinConfig(),
-                spawnConfig = new SpawnConfig(),
+                spawnConfig = new SpawnConfig(this),
                 playerConfig = new PlayerConfig(),
                 worldsConfig = new WorldsConfig()
         );
