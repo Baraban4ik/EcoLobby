@@ -65,7 +65,9 @@ public class JoinListener implements Listener {
                     activeEffect -> player.removePotionEffect(activeEffect.getType())
             );
             player.addPotionEffects(playerConfig.getEffects());
-            player.setAllowFlight(!playerConfig.isDisableFly());
+
+            if (Permission.BYPASS_FLY.has(player))
+                player.setAllowFlight(!playerConfig.isDisableFly());
         });
     }
 
