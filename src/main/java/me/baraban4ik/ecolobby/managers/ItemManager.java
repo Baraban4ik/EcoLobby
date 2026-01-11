@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.baraban4ik.ecolobby.EcoLobby;
-import me.baraban4ik.ecolobby.ImageMapRenderer;
+import me.baraban4ik.ecolobby.map.ImageMapRenderer;
 import me.baraban4ik.ecolobby.config.ConfigManager;
 import me.baraban4ik.ecolobby.config.files.ItemConfig;
 import me.baraban4ik.ecolobby.enums.PluginMessage;
